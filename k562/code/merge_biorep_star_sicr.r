@@ -14,18 +14,16 @@ library(dplyr);
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/star_sicr_re/\*SJ.out.tab /Users/mengli/Documents/projects/abs/data/star_sicr/
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/star_log/\*.final.out /Users/mengli/Documents/projects/abs/data/star_log/
 
+#system("cp data/star/* data/star_sicr/");
 
 gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-#system("cp data/star/* data/star_sicr/");
+gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
 
-
-#gene_ids<-unique(readLines("samples/gene_id_sicr.txt") );
 
 flag_id<-"nothing"
-
 
 #gene_ids<-"normal"
 ##min overhang 8

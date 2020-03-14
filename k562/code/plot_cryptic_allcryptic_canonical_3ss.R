@@ -52,9 +52,13 @@ data3_mat<-rbind(data3_mat,cbind(names,value_fr2[,2] ) );
 data3_mat_fr<-data.frame(name=as.factor(data3_mat[,1]),
                          value=as.numeric(data3_mat[,2]) );
 
+
+#    axis.text.x = element_text(angle = 90, hjust = 1)
 p <- ggplot(data3_mat_fr, aes(x=name, y=value)) + 
-  geom_boxplot(fill="#E69F00")+theme(text = element_text(size=20),axis.text.x = element_text(angle = 90, hjust = 1))+
-  ylab("maxEntScore")+theme_minimal()+
+  geom_boxplot(fill="#E69F00")+
+  #ylab("maxEntScore")+
+  ylab("")+
+  theme_minimal()+theme(text = element_text(size=15))+
   scale_x_discrete(limits=c("all_intron_cryptic","used_cryptic","intron"),
                    labels=c("All cryptic 3' sites","Used cryptic 3' sites","Canonical intron 3' splice site"))+
   xlab("")#+ggtitle("maxEntScore of different 3' splice sites")

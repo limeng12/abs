@@ -1,5 +1,3 @@
-
-
 setwd("/Users/mengli/Documents/projects/abs");
 #library(plyr);
 library(stringr);
@@ -8,14 +6,10 @@ library(BSgenome)
 library(BSgenome.Hsapiens.UCSC.hg19);
 options(scipen=999)
 
-#options("scipen"=-100, "digits"=4);
-
 #/picb/rnasys/program/install/java/jdk1.8.0_45/bin/java -jar midec.jar exon/CTL_ENCSR000AEO_1_exon \
 #star/CTL_ENCSR000AEO/CTL_ENCSR000AEO_1Aligned.sortedByCoord.out.bam
-
 #/picb/rnasys/program/install/java/jdk1.8.0_45/bin/java -jar midec.jar exon/CTL_ENCSR000AEO_2_exon \
 #star/CTL_ENCSR000AEO/CTL_ENCSR000AEO_2Aligned.sortedByCoord.out.bam
-
 
 region_len<-function(x){
   region_list<-str_split(x,":|-");
@@ -27,21 +21,16 @@ region_len<-function(x){
 
 hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 
-
 #  getSeq(hg19_genome,data_filter[,"Region"],data_filter[,"Position"]-49,data_filter[,"Position"]+50);
 
 #gene_ids<-(readLines("samples/gene_id.txt") );
-#gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
+gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
-gene_ids<-c(gene_ids_bren);
 
-#gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-
-#gene_ids<-setdiff(gene_ids,"CTL_ENCSR000AEO");
+gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
 #gene_ids<-setdiff(gene_ids,"ENCSR000KYM_FLAG_RNA");
-#gene_ids<-setdiff(gene_ids,"ENCSR443QFD_CTL_RNA_RNAi_inte");
 
-#writeLines(gene_ids,con=file("samples/gene_id.txt") );
 
 anno_sj<-read.table("anno/hg19_gencode_intron_from_ucsc.bed",sep = "\t",header = FALSE, as.is = TRUE);
 anno_sj[,2]<-anno_sj[,2]+1
@@ -64,7 +53,6 @@ ctl_sj_sj_only<-read.table("data/star_mer/CTL_all_tab",sep = "\t",header = TRUE,
 ctl_sj_5ss<-str_c(ctl_sj_sj_only$chr,":",ctl_sj_sj_only$X5_pos);
 
 ctl_sj_3ss<-str_c(ctl_sj_sj_only$chr,":",ctl_sj_sj_only$X3_pos);
-
 
 
 

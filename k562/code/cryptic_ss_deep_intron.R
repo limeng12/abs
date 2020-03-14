@@ -15,6 +15,7 @@ gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
 
 
 ctl_sj<-read.table("data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
@@ -33,18 +34,14 @@ trans_anno_gr<-with(trans_anno,GRanges(seqnames = chr,IRanges(start=start,end=en
 
 
 exon_anno<-read.table("anno/gencode.v29lift37.annotation_exon.gtf",header = FALSE,as.is = TRUE,sep="\t");
-#exon_anno<-read.table("anno/gencode.v29lift37.annotation_exon.gtf",header = FALSE,as.is = TRUE,sep="\t");
-
 exon_anno<-gtf_anno[gtf_anno[,3]=="exon",]
-#enst_ids<-sapply(str_split(exon_anno[,9],";"),"[",2);
-#exon_anno[,"enst_ids_cut"]<-str_sub(enst_ids,16,30);
 
 exon_anno<-exon_anno[,c(1,4,5)];
 colnames(exon_anno)<-c("chr","start","end");
-#exon_anno_sole_exp_sel<-unique(exon_anno_sole_exp_sel);
 exon_anno_gr<-with(exon_anno,GRanges(seqnames = chr,IRanges(start=start-200,end=end+200) ,strand="*"))
 
-deep_intron_anno<-setdiff(trans_anno_gr,exon_anno_gr);
+
+deep_intron_anno<-setdiff(trans_anno_gr,exon_anno_gr,ignore.strand=TRUE);
 
 
 gene_ids<-gene_ids[!str_detect(gene_ids,"CTL_")];

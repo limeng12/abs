@@ -10,27 +10,14 @@ library(dplyr);
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/hepg2/star_re/\*SJ.out.tab /Users/mengli/Documents/projects/abs/hepg2/data/star/
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/hepg2/star_log/\*.final.out /Users/mengli/Documents/projects/abs/hepg2/data/star_log/
 
-
-# gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
-# gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
-
-#gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ); 
 
-
-#system("cp data/star/* data/star_sicr/");
-#gene_ids<-unique(readLines("samples/gene_id_sicr.txt") );
 
 flag_id<-"nothing"
 
 
-#gene_ids<-"normal"
-##min overhang 8
-
 files_all<-list.files("hepg2/data/star/");
 
-#gene_ids<-"ENCSR443QFD_CTL_RNA_RNAi_inte"
 for( g in gene_ids){
   print(g);
   
@@ -51,32 +38,11 @@ for( g in gene_ids){
     sj_all<-rbind(sj_all,files_all_one_gene);
   }
   
-  #colnames(sj_all)<-c("chr","start","end","strand","type","anno","uni_reads","mul_reads","overhang");
   colnames(sj_all)<-c("chr","start","end","strand","type","anno","uni_reads");
   
   sj_all<-sj_all[,c("chr","start","end","strand","type","uni_reads")];
-  
-  #sj_all_mer<-ddply(sj_all,.(chr,start,end,strand,type),.fun=function(x){
-    
-    #type_s<-paste(x[,"type"],collapse = ",");
-  #  uni_reads_c<-sum(x[,"uni_reads"]);
-    
-  #  uni_reads_c
-    #paste0("type=",type_s," unique_read_c=",uni_reads_c);
-  #},.parallel=TRUE );
-  
-  #sj_all_mer<-ddply(sj_all,.(chr,start,end,strand,type),summarize, uni_reads_c=sum(uni_reads) );
     
   sj_all_mer<-sj_all %>% dplyr::group_by(chr,start,end,strand,type) %>% dplyr::summarise( anno=sum(uni_reads) );
-  
-  #minimium number reads for control is 1, for rbp is 2
-  #if(str_detect(g,"CTL_") && (g!=flag_id)  ) {
-  #  sj_all_mer<-sj_all_mer[sj_all_mer$anno>0,];
-  #}else{
-  ####  sj_all_mer<-sj_all_mer[sj_all_mer$anno>1,];
-  #  sj_all_mer<-sj_all_mer[sj_all_mer$anno>0,];
-  
-  #}
   
   
   #x5_pos is the postion of 5'ss
@@ -86,14 +52,6 @@ for( g in gene_ids){
   sj_all_mer[is_neg,2]<-sj_all_mer[is_neg,3];
   sj_all_mer[is_neg,3]<-a;
   
-  #for( i in 1:nrow(sj_all_mer) ){
-  #  if(sj_all_mer[i,4]==2){
-  #    a<-sj_all_mer[i,2]
-  #    sj_all_mer[i,2]<-sj_all_mer[i,3]
-  #    sj_all_mer[i,3]<-a
-  #  }
-    
-  #}
   
   colnames(sj_all_mer)<-c("chr","X5_pos","X3_pos","strand","type","anno");
   
@@ -190,11 +148,11 @@ write.table(sj_all_mer,file = paste0("hepg2/data/star_mer/CTL_all_tab"),quote = 
             row.names = FALSE,col.names = TRUE );
 
 
-sj_all_mer_k562<-read.table(file = paste0("data/star_mer/CTL_all_tab"),header = TRUE,sep = "\t",as.is = TRUE)
+#sj_all_mer_k562<-read.table(file = paste0("data/star_mer/CTL_all_tab"),header = TRUE,sep = "\t",as.is = TRUE)
     
-sj_all_mer<-rbind(sj_all_mer,sj_all_mer_k562);      
+#sj_all_mer<-rbind(sj_all_mer,sj_all_mer_k562);      
 
-write.table(sj_all_mer,file = paste0("hepg2/data/star_mer/CTL_all_tab2"),quote = FALSE,sep = "\t",
-            row.names = FALSE,col.names = TRUE );
+#write.table(sj_all_mer,file = paste0("hepg2/data/star_mer/CTL_all_tab2"),quote = FALSE,sep = "\t",
+#            row.names = FALSE,col.names = TRUE );
 
 

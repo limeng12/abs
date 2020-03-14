@@ -42,7 +42,7 @@ colnames(exon_anno)<-c("chr","start","end");
 #exon_anno_sole_exp_sel<-unique(exon_anno_sole_exp_sel);
 exon_anno_gr<-with(exon_anno,GRanges(seqnames = chr,IRanges(start=start-200,end=end+200) ,strand="*"))
 
-deep_intron_anno<-setdiff(trans_anno_gr,exon_anno_gr);
+deep_intron_anno<-setdiff(trans_anno_gr,exon_anno_gr,ignore.strand=TRUE);
 
 
 gene_ids<-gene_ids[!str_detect(gene_ids,"CTL_")];
@@ -123,15 +123,10 @@ for(g in gene_ids){
                          strand=t_sj_3ss[(ss3_in_intron>0)&(t_sj_3ss$strand=="-"),"strand"],as.character=TRUE);
     #cat(as.character(t_3_seqs_neg),file=paste0("hepg2/data/star_abs3_motif_deep_intron/",g,".seq"), sep="\n",append = TRUE);
     
-    
     t_3_seqs<-c(t_3_seqs,t_3_seqs_neg)
     weblogo(t_3_seqs,file.out=paste0("hepg2/data/star_abs3_motif_deep_intron/",g,".pdf") ,format="pdf" ,open = FALSE )
     
   }
-  
-  
-  
-  
   
   ss5_not_in_exon_count_per<-ss5_not_in_exon_count/nrow(t_sj_5ss)
   ss3_not_in_exon_count_per<-ss3_not_in_exon_count/nrow(t_sj_3ss)

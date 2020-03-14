@@ -8,24 +8,12 @@ library(ggplot2);
 options("scipen"=100, "digits"=4)
 hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 
-#       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs5_motif/*.seq`;do `perl score5.pl $i >> $i.score`;done;
-#       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs3_motif/*.seq`;do `perl score3.pl $i >> $i.score`;done;
-
-#       find . -type f -name "*SJ.out.tab" -exec cp {} ../star_re \;
-#       find . -type f -name "*final.out" -exec cp {} ../star_log \;
-
-#   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/polII_mutant_data/star/\*SJ.out.tab \
-#   /Users/mengli/Documents/projects/abs/data/poll_star/
-
-#   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/star_re/\* /Users/mengli/Documents/projects/abs/data/star/
-#   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/star_log/\* /Users/mengli/Documents/projects/abs/data/star_log/
-
-#   find . -type d -name "tmp" -exec rm -rf {} \;
-
 
 gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
+
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
 
 
 ctl_sj<-read.table("data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
@@ -50,22 +38,15 @@ anno_sj_negative<-anno_sj[anno_sj[,6]=="-",];
 
 anno_5ss<-unique( c(str_c(anno_sj_positive[,1],":",anno_sj_positive[,2]),
             str_c(anno_sj_negative[,1],":",anno_sj_negative[,3])  )  );
-#colnames(anno_5ss)<-c("chr","X5_pos");
-
 
 anno_3ss<-unique( c(str_c(anno_sj_positive[,1],":",anno_sj_positive[,3]),
             str_c(anno_sj_negative[,1],":",anno_sj_negative[,2])  ) );
-#colnames(anno_3ss)<-c("chr","X3_pos");
-
 
 #total_5ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],":",ctl_sj_high_confi[,"X5_pos"] ),anno_5ss) );
-
 #total_3ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],":",ctl_sj_high_confi[,"X3_pos"] ),anno_3ss) );
 
 total_5ss<-anno_5ss;
-
 total_3ss<-anno_3ss;
-
 
 gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"CTL_all")];
 
@@ -73,10 +54,10 @@ junc_len<-matrix(nrow=0,ncol=9);
 
 g_53_sj<-matrix(nrow=0,ncol=10);
 
-
 # gene_ids<-gene_ids[str_detect(gene_ids,"AQR")];
 
 # g<-gene_ids[1];
+
 
 for(g in gene_ids){
   print(g);

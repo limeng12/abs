@@ -29,18 +29,10 @@ intron_coor_range_negative<-with(intron_coor_neg,
                                          strand=strand) );
 
 
-
-
 gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-
-#gene_ids<-setdiff(gene_ids,"CTL_ENCSR000AEO");
-#gene_ids<-setdiff(gene_ids,"ENCSR000KYM_FLAG_RNA");
-#gene_ids<-setdiff(gene_ids,"ENCSR443QFD_CTL_RNA_RNAi_inte");
-
-
 
 
 
@@ -91,20 +83,4 @@ for(g in gene_ids){
   weblogo(intron_seq_all,file.out=paste0("data/exon_mer_target_only_small_intron_fa/",g,".pdf") ,open = FALSE )
   
 }
-  
-
-
-
-#pdf("result/test_motif.pdf")
-
-#dev.off();
-
-
-
-
-
-
-
-  
-  
   

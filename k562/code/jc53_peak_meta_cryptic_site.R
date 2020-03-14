@@ -1,5 +1,3 @@
-#  control 
-#
 setwd("/Users/mengli/Documents/projects/abs");
 library(valr)
 library(plyr)
@@ -10,26 +8,6 @@ source("code/multiplot.r");
 source("code/meta_profile/get_k562_high_exp_trans.R")
 #source("code/jc53_peak_meta_minus.R",echo = TRUE);
 
-########  cut -f1-3,13 star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-########   cut -f1-3,13 star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-
-#   awk '{print $1"\t"$2"\t"$2+1"\t"$13}' star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-#   awk '{print $1"\t"$3"\t"$3+1"\t"$13}' star_target_only_jc/AQR_no_ctl.bed >> star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-
-#   awk '{print $1"\t"$2"\t"$2+1"\t"$3}' star_target_only_jc_5ss/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-#   awk '{print $1"\t"$2"\t"$2+1"\t"$3}' star_target_only_jc_3ss/AQR_no_ctl.bed >> star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-
-#    for i in `ls star_target_only_jc_5ss/*.bed | xargs -n 1 basename`;\
-#    do `awk '{print $1"\t"$2"\t"$2+1"\t"$4}' star_target_only_jc_5ss/$i > star_target_only_jc_bedgraph/$i.bedgraph`;done;
-#    for i in `ls star_target_only_jc_3ss/*.bed | xargs -n 1 basename`; \
-#    do `awk '{print $1"\t"$2"\t"$2+1"\t"$4}' star_target_only_jc_3ss/$i >> star_target_only_jc_bedgraph/$i.bedgraph`;done;
-
-
-#    for i in `ls star_target_only_jc_5ss/*.bed | xargs -n 1 basename`; \
-#    do `awk '{print $1"\t"$2"\t"$2+1"\t"$4}' star_target_only_jc_5ss/$i > star_target_only_jc_bedgraph/5_$i.bedgraph`;done;      
-#    for i in `ls star_target_only_jc_3ss/*.bed | xargs -n 1 basename`; \
-#   do `awk '{print $1"\t"$2"\t"$2+1"\t"$4}' star_target_only_jc_3ss/$i > star_target_only_jc_bedgraph/3_$i.bedgraph`;done;   
-
 
 system("sh code/run_sh/generate_bedgraph_from_cryptic_ss.sh");
 
@@ -37,44 +15,6 @@ system("sh code/run_sh/generate_bedgraph_from_cryptic_ss.sh");
 genomefile <- valr_example('hg19.chrom.sizes.gz');
 
 genome <- read_genome(genomefile);
-
-
-#TSS_region<-read_bed("anno/TSS_high.bed",n_fields = 6);
-
-# transcript_region<-read_bed("anno/transcripts_high.bed",n_fields = 6);
-# print(paste0("Number of bp Trans used: ", nrow(transcript_region) ) );
-# transcript_region$start<-transcript_region$start+1;
-# 
-# TSS_region<-transcript_region;
-# TES_region<-transcript_region;
-# 
-# for(i in 1:nrow(transcript_region)){
-#   if(transcript_region[i,"strand"]=="+"){
-#     TSS_region[i,"end"]<-TSS_region[i,"start"];
-#     
-#     TES_region[i,"start"]<-TES_region[i,"end"];
-#     
-#   }else{
-#     TSS_region[i,"start"]<-TSS_region[i,"end"];
-#     
-#     TES_region[i,"end"]<-TES_region[i,"start"];   
-#     
-#   }
-#   
-# }
-# 
-# #TSS_region<-read_bed("anno/TSS_high.bed",n_fields = 6);
-# #TES_region<-read_bed("anno/TES_high.bed",n_fields = 6);
-# 
-# 
-# print(paste0("Number of bp TSS used: ", nrow(TSS_region) ) );
-# print(paste0("Number of bp TES used: ", nrow(TES_region) ) );
-
-
-
-#TES_region<-read_bed("anno/TES_high.bed",n_fields = 6);
-
-
 
 ###only use intron in high expressed transcript (TPM>10) and in protein coding genes to avoid bias
 #intron<-read_bed("anno/intron_coor_gencode_high.bed",n_fields = 6);
@@ -87,12 +27,9 @@ intron$name<-sapply(str_split(intron$name,"\\."),"[",1);
 ##only consider exclusively express transcripts
 #intron<-intron[intron$name %in% high_exp_trans_ids,];
 
-
 intron<-intron[!duplicated(intron[,c("chrom","start","end")]  ),];
 
 intron<-intron[!str_detect(intron$chrom,"_"),];
-
-#intron<-intron[-1* which(is.na(intron$start)),];
 
 
 intron<-intron[(intron$end-intron$start>500),];
@@ -122,34 +59,16 @@ bp_site$start<-bp_site$start+1
 bp_site<-bp_site[in_high_intron,];
 
 
-#intron<-intron[contain_bs_intron,];
-
-#print(paste0("Number of bp siTES used: ", nrow(bp_site) ) );
-
-#intron<-intron[(intron$end-intron$start>250) & (intron$end-intron$start<50000),];
-
 print(paste0("Number of introns used: ", nrow(intron) ) );
 
 print(paste0("Number of bp used: ", nrow(bp_site) ) );
 
-
-
 #intron<-intron[1:80000,];
-
 #bp_site<-bp_site[1:5000,];
 
 
 meta_5_3<-function(rbp){
   
-  #if(!str_detect(y_file,"plus.bedgraph") | str_detect(y_file,"input") ){
-  #  return(0);
-  #}
-  
-  #y_file<-"AQR_1plus.bedgraph";
-  # rbp<-"TIA1_1"
-  
-  #"ZNF800_2plus.bedgraph"         
-  #"ZRANB2_1minus.bedgraph"
   
   y<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/",
                           rbp,"_no_ctl.bed.bedgraph") );
@@ -209,9 +128,6 @@ meta_5_3<-function(rbp){
               win_sum = sum(win_sum, na.rm = TRUE)
     );
   
-  
-  ##run_minus(rbp);
-  #y_minus<-read_bedgraph(paste0("/Volumes/mengli/abs/k562_eclip_coverage/",rbp,".bedgraph") );
   y_minus<-y;
   print(rbp)
   
@@ -230,10 +146,6 @@ meta_5_3<-function(rbp){
     mutate(start = end );
   
   
-  
-  #region_size <- 300
-  # 50 bp windows
-  #win_size <- 1
   
   # add slop to the TSS, break into windows and add a group
   x5 <- s5ss %>%
@@ -338,21 +250,18 @@ meta_5_3<-function(rbp){
 pdf("result/jc_meta_cryptic_site_raw2.pdf", width=15, height = 8);
 library(stringr);
 files_all<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph");
-#cut -f1-3,5 star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-gene_ids<-sapply(str_split(files_all,"\\_no"),"[",1);
-#gene_ids<-unique(gene_ids[!str_detect(files_all,"input")]);
-#gene_ids<-readLines("samples/gene_id.txt");
-#rbp<-"ATP5C1"
-#gene_ids<-c(str_c("3_",gene_pol_ids),str_c("5_",gene_pol_ids) );
-#gene_ids<-gene_ids[1:1];
-#gene_ids<-gene_ids[1:5];
-#gene_ids<-"AQR";
+gene_ids_in_file<-sapply(str_split(files_all,"\\_no"),"[",1);
 
-#gene_ids<-unique(gene_ids[str_detect(gene_ids,"R749H_slow") | str_detect(gene_ids,"E1126G_fast")]);
-select_genes<-c( str_c("3_",readLines("samples/gene_id.txt") ), 
-                 str_c("5_",readLines("samples/gene_id.txt") ) )
+gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
+gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
+gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
 
-gene_ids<-intersect(gene_ids,select_genes);
+select_genes<-c( str_c("3_", gene_ids), 
+                 str_c("5_",gene_ids ) )
+
+
+gene_ids<-intersect(gene_ids_in_file,select_genes);
 
 for(i in gene_ids){
   if(str_detect(i,"CTL") ){
@@ -362,6 +271,84 @@ for(i in gene_ids){
   meta_5_3(i);
   #break
 }
+
+dev.off();
+
+
+
+
+files_all_3<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph",
+                        pattern="^3_*",full.names=TRUE);
+
+cryptic_merge_3<-read.table(files_all_3[1],sep = "\t",as.is = TRUE,header = FALSE);
+colnames(cryptic_merge_3)<-c("chr","start","end","count");
+
+for(f in files_all_3[-1]){
+  if(str_detect(f,"CTL") || str_detect(f,"R749H_slow") ||
+     str_detect(f,"RBM8A_hela") || str_detect(f,"WT_poII") || str_detect(f,"rbp_merge")){
+    next;
+  }
+  print(f)
+  cryptic_merge_3_one<-read.table(f,sep = "\t",as.is = TRUE,header = FALSE)
+  colnames(cryptic_merge_3_one)<-c("chr","start","end","count");
+  
+  
+  cryptic_merge_3<-rbind(cryptic_merge_3, cryptic_merge_3_one);
+  
+  #break
+}
+
+cryptic_merge_3_one_gr<-cryptic_merge_3 %>% group_by(chr,start,end) %>% dplyr::summarise(count=sum(count));
+
+
+write.table(cryptic_merge_3_one_gr,col.names = FALSE,quote = FALSE,sep="\t",row.names = FALSE,
+            file="/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/3_rbp_merge.bedgraph")
+
+
+
+files_all_5<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph",
+                        pattern="^5_*",full.names=TRUE);
+
+cryptic_merge_5<-read.table(files_all_5[1],sep = "\t",as.is = TRUE,header = FALSE);
+
+cryptic_merge_5<-read.table(files_all_3[1],sep = "\t",as.is = TRUE,header = FALSE);
+colnames(cryptic_merge_5)<-c("chr","start","end","count");
+
+
+for(f in files_all_5[-1]){
+  if(str_detect(f,"CTL") || str_detect(f,"R749H_slow") ||
+     str_detect(f,"RBM8A_hela") || str_detect(f,"WT_poII") || str_detect(f,"rbp_merge")){
+    next;
+  }
+  print(f)
+  cryptic_merge_5_one<-read.table(f,sep = "\t",as.is = TRUE,header = FALSE)
+  colnames(cryptic_merge_5_one)<-c("chr","start","end","count");
+  
+  
+  cryptic_merge_5<-rbind(cryptic_merge_5, cryptic_merge_5_one);
+  
+  #break
+}
+
+cryptic_merge_5_one_gr<-cryptic_merge_5 %>% group_by(chr,start,end) %>% dplyr::summarise(count=sum(count));
+
+
+write.table(cryptic_merge_5_one_gr,col.names = FALSE,quote = FALSE,sep="\t",row.names = FALSE,
+            file="/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/5_rbp_merge.bedgraph")
+
+
+
+pdf("result/jc_meta_cryptic_site_raw2_merge.pdf", width=15, height = 8);
+
+y1<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/3_rbp_merge.bedgraph") );
+
+meta_5_3("3_all_RBP_merge", y1);
+
+
+y2<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/5_rbp_merge.bedgraph") );
+
+meta_5_3("5_all_RBP_merge", y2);
+
 
 dev.off();
 

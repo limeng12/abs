@@ -12,22 +12,10 @@ hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 #       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs5_motif/*.seq`;do `perl score5.pl $i >> $i.score`;done;
 #       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs3_motif/*.seq`;do `perl score3.pl $i >> $i.score`;done;
 
-#gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) ); 
-#gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
-
-#gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-
-
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
-
-#gene_ids<-(readLines("samples/gene_id.txt") );
-#gene_ids<-c(gene_ids,gene_ids_rRNA);
-#writeLines(gene_ids,con=file("samples/gene_id.txt") );
-
 
 ctl_sj<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
 colnames(ctl_sj)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno");
-
 
 ctl_sj_high<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
 colnames(ctl_sj_high)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno");
@@ -53,11 +41,8 @@ anno_5ss<-unique( c(str_c(anno_sj_positive[,1],":",anno_sj_positive[,2]),
 
 anno_3ss<-unique( c(str_c(anno_sj_positive[,1],":",anno_sj_positive[,3]),
             str_c(anno_sj_negative[,1],":",anno_sj_negative[,2])  ) );
-#colnames(anno_3ss)<-c("chr","X3_pos");
-
 
 #total_5ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],":",ctl_sj_high_confi[,"X5_pos"] ),anno_5ss) );
-
 #total_3ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],":",ctl_sj_high_confi[,"X3_pos"] ),anno_3ss) );
 
 total_5ss<-anno_5ss
@@ -68,9 +53,7 @@ total_3ss<-anno_3ss;
 gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"CTL_all")];
 
 junc_len<-matrix(nrow=0,ncol=8);
-
 g_53_sj<-matrix(nrow=0,ncol=9);
-
 
 
 for(g in gene_ids){
@@ -91,7 +74,6 @@ for(g in gene_ids){
   t_sj<-t_sj[(t_sj$anno>1) ,];
   
   
-  
   t_sj$strand2<-sapply(t_sj$strand,function(x){
     if(x==1){
       return("+");
@@ -109,19 +91,14 @@ for(g in gene_ids){
                                 anno_5ss   );
   #t_5_only_sj_count<-sum(!t_5_only_sj_set_index);
   
-  
   ctl_5_only_sj_count<-length(unique(setdiff(total_5ss, str_c(t_sj[,"chr"],":",t_sj[,"X5_pos"])  )  ) );
-  
   
   #t_5_cano_per<-sum(str_detect(t_5_only_sj_set,"GT")) /length(t_5_only_sj_set);
   t_5_only_sj_set<-unique(str_c(t_sj[,"chr"],":",t_sj[,"X5_pos"],t_sj[,"X5_n"])[!t_5_only_sj_set_index]);
   t_5_only_sj_count_u12<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"AT")] );
   
-  
   t_5_only_sj_count_gc<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"GC")] );
   t_5_only_sj_count<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"GT")] );
-  
-  
   
   t_sj_in_only_5ss_fr<-t_sj[!t_5_only_sj_set_index,c("chr","X5_pos","X5_pos","X5_n","strand")];
   
@@ -167,17 +144,13 @@ for(g in gene_ids){
                                  anno_3ss  )
   #t_3_only_sj_count<-sum(!t_3_only_sj_set_index);
   
-
-  
   t_3_only_sj_set<-unique(str_c(t_sj[,"chr"],":",t_sj[,"X3_pos"],t_sj[,"X3_n"])[!t_3_only_sj_set_index])
                            
   t_3_only_sj_count_u12<-length(t_3_only_sj_set[str_detect(t_3_only_sj_set,"AC")] );
   
   #t_3_only_sj_count_u12_readcount<-sum(t_3_only_sj_set[str_detect(t_3_only_sj_set,"AC")])
-    
   
   t_3_only_sj_count<-length(t_3_only_sj_set[str_detect(t_3_only_sj_set,"AG")] );
-  
   
   if(sum(!t_3_only_sj_set_index)>0){
     t_3_seqs<-getSeq(hg19_genome,t_sj[(!t_3_only_sj_set_index)&positive_index,"chr"],
@@ -221,9 +194,6 @@ for(g in gene_ids){
   
   
   #t_3_cano_per<-sum(str_detect(t_3_only_sj_set,"AG"))/length(t_3_only_sj_set);
-  
-  
-  
   #t_ctl_sj<-left_join(t_sj,ctl_sj,
   #                    by=c("chr"="chr","X5_pos"="X5_pos","X3_pos"="X3_pos",
   #                         "strand"="strand","type"="type","X5_pos"="X5_pos","X3_pos"="X3_pos") );
@@ -243,7 +213,6 @@ for(g in gene_ids){
   
   junc_len<-rbind(junc_len,c(g,nrow(t_only_sj_all),
                              as.vector(summary(abs(t_only_sj_all$X3_pos-t_only_sj_all$X5_pos))) ) );
-  
   
   
   is_neg<-t_only_sj_all[,"strand"]==2;
@@ -269,12 +238,8 @@ for(g in gene_ids){
   
   
   #t_5_only_anno_sj_count<-length(setdiff(t_sj[,2],anno_sj[,2]) );
-  
   #t_3_only_anno_sj_count<-length(setdiff(t_sj[,3],anno_sj[,3]) );
-  
-  
   #ctl_5_only_sj_count<-length(setdiff(ctl_sj[,2],t_sj[,2]) );
-  
   #ctl_3_only_sj_count<-length(setdiff(ctl_sj[,3],t_sj[,3]) );
   
   
