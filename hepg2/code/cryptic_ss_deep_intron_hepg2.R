@@ -6,12 +6,13 @@ library(BSgenome.Hsapiens.UCSC.hg19);
 library(ggplot2);
 library(GenomicRanges)
 library(IRanges)
+library(RWebLogo)
+
 options("scipen"=100, "digits"=4)
 #hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 setwd("/Users/mengli/Documents/projects/abs");
 
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
-
 
 ctl_sj<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
 #hg19_refgene.gtf
@@ -23,8 +24,6 @@ trans_anno<-trans_anno[,c(1,4,5)];
 colnames(trans_anno)<-c("chr","start","end");
 
 trans_anno_gr<-with(trans_anno,GRanges(seqnames = chr,IRanges(start=start,end=end) ,strand="*"))
-
-
 
 
 exon_anno<-read.table("anno/gencode.v29lift37.annotation_exon.gtf",header = FALSE,as.is = TRUE,sep="\t");

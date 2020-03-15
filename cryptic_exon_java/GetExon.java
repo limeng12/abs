@@ -28,14 +28,21 @@ public class GetExon {
 			SAMRecord recode=r.next();
 			//String att=recode.getStringAttribute("jI");
 			
-			int[] att=recode.getSignedIntArrayAttribute("jI");
+			int[] att;
+			
+			if(recode.hasAttribute("jI")) {
+				att=recode.getSignedIntArrayAttribute("jI");
+			}else {
+				att=Reada5a3.get_splice_junction_pos(recode.getCigar(),recode.getStart() );
+			}
 			
 			boolean is_neg=recode.getReadNegativeStrandFlag();
 			
-			if(att[0]==-1 || att.length==2) {
+			if( (att.length<=2) || (att[0]==-1 )) {
 				continue;
 			}
 			
+			//for(int i=0;i<((att.length/2)-1);i++) {
 				for(int i=0;i<(Math.floor(att.length/2)-1);i++) {
 
 				String one_region=recode.getContig()+":"+(att[1+i*2]+1)+"-"+(att[2+i*2]-1);
@@ -50,7 +57,29 @@ public class GetExon {
 				
 			}
 			
+			
+			/*	if(att.length>4) {
+				String one_region=recode.getContig()+":"+(att[1]+1)+"-"+(att[2]-1);
+				all_exon.add(one_region);
 				
+				
+				one_region=recode.getContig()+":"+(att[3]+1)+"-"+(att[4]-1);
+				all_exon.add(one_region);
+				//System.out.println(  one_region );
+				continue;
+			}
+			
+			
+			if(att.length>2) {
+				String one_region=recode.getContig()+":"+(att[1]+1)+"-"+(att[2]-1);
+				all_exon.add(one_region);
+				//System.out.println(  one_region );
+				continue;
+			}*/
+			
+
+			
+			
 			
 		}
 		
@@ -61,6 +90,12 @@ public class GetExon {
         }
         output_one.close();
 		
+/*		it = all_exon.iterator(); // why capital "M"?
+		while(it.hasNext()) {
+			output_one.write(it.next());
+			output_one.newLine();
+		}
+		output_one.close();*/
 		
 		
 		r.close();

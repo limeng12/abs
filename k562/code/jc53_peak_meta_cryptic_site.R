@@ -8,7 +8,6 @@ source("code/multiplot.r");
 #source("code/meta_profile/get_k562_high_exp_trans.R")
 #source("code/jc53_peak_meta_minus.R",echo = TRUE);
 
-
 system("sh code/run_sh/generate_bedgraph_from_cryptic_ss.sh");
 
 ####high express gene should###

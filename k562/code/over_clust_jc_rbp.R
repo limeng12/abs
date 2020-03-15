@@ -1,5 +1,3 @@
-# cluster based on RBP shared junctions, may induce regulation or a complex
-
 setwd("/Users/mengli/Documents/projects/abs");
 library(plyr);
 library(stringr);
@@ -12,9 +10,8 @@ library(reshape2)
 gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
-gene_ids<-c(gene_ids_bren)#,gene_ids_sicr);
-
-
+gene_ids<-c(gene_ids_bren,gene_ids_sicr)#,gene_ids_sicr);
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"CTL_")];
 
@@ -100,18 +97,15 @@ rownames(diss_mat)<-gene_ids_noctl;
 colnames(diss_mat)<-gene_ids_noctl;
 
 
-write.table(diss_mat,file = "result/jc_overlap_p_values_matrix.tsv",sep = "\t",
-            col.names = TRUE,row.names = TRUE,quote = FALSE);
+#write.table(diss_mat,file = "result/jc_overlap_p_values_matrix.tsv",sep = "\t",
+#            col.names = TRUE,row.names = TRUE,quote = FALSE);
 
 
 library(reshape2)
 
-
 diss_mat<- log(-1*diss_mat+1);
 
-
 pdf("result/jc_ovlap_clu.pdf",width = 50,height = 50);
-
 
 #pheatmap(diss_mat,cluster_rows=TRUE,cluster_cols=TRUE);
 pheatmap(diss_mat,cluster_rows=TRUE,cluster_cols=TRUE);

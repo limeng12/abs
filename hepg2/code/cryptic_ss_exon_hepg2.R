@@ -6,19 +6,19 @@ library(BSgenome.Hsapiens.UCSC.hg19);
 library(ggplot2);
 library(GenomicRanges)
 library(IRanges)
+library(RWebLogo)
 options("scipen"=100, "digits"=4)
-#hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
+hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 setwd("/Users/mengli/Documents/projects/abs");
 
-
-gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
+gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") );
 
 ctl_sj<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
 #hg19_refgene.gtf
 
 exon_anno<-read.table("anno/gencode.v29lift37.annotation_exon.gtf",header = FALSE,as.is = TRUE,sep="\t");
 
-exon_anno<-gtf_anno[gtf_anno[,3]=="exon",]
+exon_anno<-exon_anno[exon_anno[,3]=="exon",]
 #enst_ids<-sapply(str_split(exon_anno[,9],";"),"[",2);
 #exon_anno[,"enst_ids_cut"]<-str_sub(enst_ids,16,30);
 
@@ -112,16 +112,11 @@ for(g in gene_ids){
     
   }
   
-  
-  
-  
   ss5_in_exon_count_per<-ss5_in_exon_count/nrow(t_sj_5ss)
   ss3_in_exon_count_per<-ss3_in_exon_count/nrow(t_sj_3ss)
   
-  
   g_53_sj<-rbind(g_53_sj,c(g,ss5_in_exon_count,ss3_in_exon_count,
                            ss5_in_exon_count_per,ss3_in_exon_count_per) );
-  
   
 }
 

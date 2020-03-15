@@ -5,8 +5,6 @@ library(dplyr);
 library(bedr);
 options(scipen=999)
 
-#options("scipen"=100, "digits"=4);
-
 #system("scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/exon/\\*exon /Users/mengli/Documents/projects/abs/data/exon/")
 
 region_len<-function(x){
@@ -56,7 +54,7 @@ for( g in gene_ids){
 
 ################################################merge all ctl#################################################
 
-files_all<-list.files("hepg2/data/exon/");
+files_all<-list.files("hepg2/data/exon_mer/");
 sj_all<-data.frame(chr=c(),start=c(),end=c(),id=c(),score=c(),strand=c())
 
 for( g in gene_ids){
@@ -71,7 +69,7 @@ for( g in gene_ids){
   
   for(i_file in files_one_g){
     
-    files_all_one_gene<-read.table(paste0("hepg2/data/exon/",i_file),header = FALSE,as.is = TRUE)
+    files_all_one_gene<-read.table(paste0("hepg2/data/exon_mer/",i_file),header = TRUE,as.is = TRUE)
     
     sj_all<-rbind(sj_all,files_all_one_gene);
   }

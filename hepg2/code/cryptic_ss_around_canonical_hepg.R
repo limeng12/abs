@@ -6,10 +6,11 @@ library(BSgenome.Hsapiens.UCSC.hg19);
 library(ggplot2);
 library(GenomicRanges)
 library(IRanges)
+library(RWebLogo)
+
 options("scipen"=100, "digits"=4)
 #hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 setwd("/Users/mengli/Documents/projects/abs");
-
 
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
 
@@ -39,8 +40,6 @@ intron_anno_large_canonical_around<-rbind(intron_anno_large_canonical_around_lef
 
 #exon_anno_sole_exp_sel<-unique(exon_anno_sole_exp_sel);
 intron_anno_large_canonical_around_gr<-with(intron_anno_large_canonical_around,GRanges(seqnames = chr,IRanges(start=start,end=end) ,strand=strand))
-
-#deep_intron_anno<-setdiff(trans_anno_gr,exon_anno_gr);
 
 
 gene_ids<-gene_ids[!str_detect(gene_ids,"CTL_")];

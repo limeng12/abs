@@ -8,9 +8,7 @@ library(cluster);
 library(pheatmap);
 library(reshape2);
 
-
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) ;
-
 
 gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"CTL_")];
 
@@ -98,8 +96,8 @@ colnames(diss_mat)<-gene_ids_noctl;
 
 
 
-write.table(diss_mat,file = "hepg2/result/jc_overlap_p_values_matrix.tsv",sep = "\t",
-            col.names = TRUE,row.names = TRUE,quote = FALSE);
+#write.table(diss_mat,file = "hepg2/result/jc_overlap_p_values_matrix.tsv",sep = "\t",
+#            col.names = TRUE,row.names = TRUE,quote = FALSE);
 
 
 library(reshape2)

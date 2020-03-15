@@ -33,7 +33,7 @@ anno_sj<-read.table("anno/hg19_gencode_intron_from_ucsc.bed",sep = "\t",header =
 anno_sj[,2]<-anno_sj[,2]+1;
 anno_sj<-unname(anno_sj);
 
-colnames(anno_sj)[1:3]<-c("chr","start","end","intron_id","socre","strand");
+colnames(anno_sj)[1:6]<-c("chr","start","end","intron_id","socre","strand");
 
 
 anno_sj_positive<-anno_sj[anno_sj[,6]=="+",];

@@ -12,13 +12,13 @@ hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 #       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs5_motif/*.seq`;do `perl score5.pl $i >> $i.score`;done;
 #       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs3_motif/*.seq`;do `perl score3.pl $i >> $i.score`;done;
 
-gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
+gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) ;
 
 ctl_sj<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
-colnames(ctl_sj)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno");
+colnames(ctl_sj)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno","RBP_count");
 
 ctl_sj_high<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
-colnames(ctl_sj_high)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno");
+colnames(ctl_sj_high)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno","RBP_count");
 
 ###high confidence control should have enought unique read mapping and also in annotation.
 ##for control calculation only
@@ -29,6 +29,7 @@ ctl_sj_high_confi<-ctl_sj_high[ctl_sj_high$anno>2,];
 anno_sj<-read.table("anno/hg19_gencode_intron_from_ucsc.bed",sep = "\t",header = FALSE, as.is = TRUE);
 anno_sj[,2]<-anno_sj[,2]+1
 anno_sj<-unname(anno_sj);
+colnames(anno_sj)[1:6]<-c("chr","start","end","intron_id","socre","strand");
 
 anno_sj_positive<-anno_sj[anno_sj[,6]=="+",]
 anno_sj_negative<-anno_sj[anno_sj[,6]=="-",]
@@ -130,7 +131,6 @@ for(g in gene_ids){
      weblogo(as.character(t_5_seqs),file.out=paste0("hepg2/data/star_abs5_motif/",g,".pdf") ,format="pdf" ,open = FALSE )
      
   }
-  
   
   
   t_sj_3only_nondup_index<-!duplicated(t_sj[,c("chr","X3_pos","X3_n")] );

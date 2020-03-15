@@ -1,8 +1,8 @@
 library(plyr);
 library(stringr);
 library(dplyr);
-library(BSgenome);
-library(BSgenome.Hsapiens.UCSC.hg19);
+#library(BSgenome);
+#library(BSgenome.Hsapiens.UCSC.hg19);
 library(ggplot2);
 library(GenomicRanges)
 library(IRanges)
@@ -12,9 +12,7 @@ setwd("/Users/mengli/Documents/projects/abs");
 
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
 
-
 ctl_sj<-read.table("hepg2/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
-
 
 repeat_anno<-read.table("anno/hg19_repeat2",header = TRUE,as.is = TRUE,sep = "\t");
 
@@ -57,13 +55,10 @@ for(g in gene_ids){
   ss5_in_alu<-sum(ss5_in_intron>0);
   ss3_in_alu<-sum(ss3_in_intron>0);
   
-  
   #ss5_not_in_exon_count_per<-ss5_not_in_exon_count/nrow(t_sj_5ss)
   #ss3_not_in_exon_count_per<-ss3_not_in_exon_count/nrow(t_sj_3ss)
   
-  
   g_53_sj<-rbind(g_53_sj,c(g, ss5_in_alu, ss3_in_alu) );
-  
   
 }
 

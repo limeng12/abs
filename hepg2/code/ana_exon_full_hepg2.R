@@ -5,12 +5,8 @@ library(dplyr);
 library(BSgenome)
 library(BSgenome.Hsapiens.UCSC.hg19);
 options(scipen=999)
-
-#options("scipen"=-100, "digits"=4);
-
 #/picb/rnasys/program/install/java/jdk1.8.0_45/bin/java -jar midec.jar exon/CTL_ENCSR000AEO_1_exon \
 #star/CTL_ENCSR000AEO/CTL_ENCSR000AEO_1Aligned.sortedByCoord.out.bam
-
 #/picb/rnasys/program/install/java/jdk1.8.0_45/bin/java -jar midec.jar exon/CTL_ENCSR000AEO_2_exon \
 #star/CTL_ENCSR000AEO/CTL_ENCSR000AEO_2Aligned.sortedByCoord.out.bam
 
@@ -263,7 +259,7 @@ for(g in gene_ids){
 
 g_53_sj_data<-unique(g_53_sj_data);
 
-g_53_sj_data<-g_53_sj_data[order(g_53_sj_data$no_in_ctl_exon_count_small,decreasing = TRUE),];
+g_53_sj_data<-g_53_sj_data[order(g_53_sj_data$no_in_ctl_exon_count,decreasing = TRUE),];
 
 write.table(g_53_sj_data,file="hepg2/result/g_53_exon_all_full.tsv",sep="\t",
             quote = FALSE,col.names = TRUE,row.names = FALSE);

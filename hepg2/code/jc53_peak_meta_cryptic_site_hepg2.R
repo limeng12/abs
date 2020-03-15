@@ -9,7 +9,7 @@ library(stringr)
 source("code/multiplot.r");
 #source("code/jc53_peak_meta_minus.R",echo = TRUE);
 #source("hepg2/code/get_hepg2_high_exp_trans.R",echo=TRUE);
-source("hepg2/code/meta_profile/get_hepg2_high_exp_trans.R");
+#source("hepg2/code/meta_profile/get_hepg2_high_exp_trans.R");
 
 system("sh hepg2/code/run_sh/generate_bedgraph_from_cryptic_ss.sh");
 
