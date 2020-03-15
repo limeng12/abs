@@ -20,7 +20,7 @@ gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 
 flag_id<-"nothing"
@@ -148,8 +148,9 @@ for( g in gene_ids_ctl[-1]){
 }
 
 
-sj_all_mer<-sj_all %>% group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
-  summarise(anno=paste0(anno,collapse = " "),rbp_count=length(unique(rbp_count) ));
+sj_all_mer<-sj_all %>% dplyr::group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
+  #dplyr::summarise(anno=paste0(anno,collapse = " "),rbp_count=length(unique(rbp_count) ));
+  dplyr::summarise(anno=sum(anno),rbp_count=n());
 
 
 sj_all_mer<-sj_all_mer[,c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno","rbp_count")];

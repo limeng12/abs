@@ -11,7 +11,7 @@ gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 
 g_53_sj<-matrix(nrow=0,ncol=2);

@@ -5,7 +5,7 @@ library(dplyr)
 library(bedr)
 library(stringr)
 source("code/multiplot.r");
-source("code/meta_profile/get_k562_high_exp_trans.R")
+#source("code/meta_profile/get_k562_high_exp_trans.R")
 #source("code/jc53_peak_meta_minus.R",echo = TRUE);
 
 
@@ -247,35 +247,8 @@ meta_5_3<-function(rbp){
   
 }
 
-pdf("result/jc_meta_cryptic_site_raw2.pdf", width=15, height = 8);
-library(stringr);
-files_all<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph");
-gene_ids_in_file<-sapply(str_split(files_all,"\\_no"),"[",1);
 
-gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
-gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
-gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
-
-select_genes<-c( str_c("3_", gene_ids), 
-                 str_c("5_",gene_ids ) )
-
-
-gene_ids<-intersect(gene_ids_in_file,select_genes);
-
-for(i in gene_ids){
-  if(str_detect(i,"CTL") ){
-    next;
-  }
-  
-  meta_5_3(i);
-  #break
-}
-
-dev.off();
-
-
-
+unlink("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/3_rbp_merge.bedgraph")
 
 files_all_3<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph",
                         pattern="^3_*",full.names=TRUE);
@@ -298,7 +271,7 @@ for(f in files_all_3[-1]){
   #break
 }
 
-cryptic_merge_3_one_gr<-cryptic_merge_3 %>% group_by(chr,start,end) %>% dplyr::summarise(count=sum(count));
+cryptic_merge_3_one_gr<-cryptic_merge_3 %>% dplyr::group_by(chr,start,end) %>% dplyr::summarise(count=sum(count));
 
 
 write.table(cryptic_merge_3_one_gr,col.names = FALSE,quote = FALSE,sep="\t",row.names = FALSE,
@@ -306,6 +279,7 @@ write.table(cryptic_merge_3_one_gr,col.names = FALSE,quote = FALSE,sep="\t",row.
 
 
 
+unlink("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/5_rbp_merge.bedgraph")
 files_all_5<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph",
                         pattern="^5_*",full.names=TRUE);
 
@@ -330,29 +304,58 @@ for(f in files_all_5[-1]){
   #break
 }
 
-cryptic_merge_5_one_gr<-cryptic_merge_5 %>% group_by(chr,start,end) %>% dplyr::summarise(count=sum(count));
+cryptic_merge_5_one_gr<-cryptic_merge_5 %>% dplyr::group_by(chr,start,end) %>% dplyr::summarise(count=sum(count));
 
 
 write.table(cryptic_merge_5_one_gr,col.names = FALSE,quote = FALSE,sep="\t",row.names = FALSE,
             file="/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/5_rbp_merge.bedgraph")
 
-
-
-pdf("result/jc_meta_cryptic_site_raw2_merge.pdf", width=15, height = 8);
-
-y1<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/3_rbp_merge.bedgraph") );
-
-meta_5_3("3_all_RBP_merge", y1);
-
-
-y2<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/5_rbp_merge.bedgraph") );
-
-meta_5_3("5_all_RBP_merge", y2);
-
-
-dev.off();
+# 
+# 
+# pdf("result/jc_meta_cryptic_site_merge.pdf", width=15, height = 8);
+# 
+# y1<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/3_rbp_merge.bedgraph") );
+# 
+# meta_5_3("3_all_RBP_merge", y1);
+# 
+# 
+# y2<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph/5_rbp_merge.bedgraph") );
+# 
+# meta_5_3("5_all_RBP_merge", y2);
+# 
+# 
+# dev.off();
 
 
 #"ZNF800_2plus.bedgraph"         
 #"ZRANB2_1minus.bedgraph"
+
+
+pdf("result/jc_meta_cryptic_site_raw.pdf", width=15, height = 8);
+library(stringr);
+files_all<-list.files("/Users/mengli/Documents/projects/abs/data/star_target_only_jc_bedgraph");
+gene_ids_in_file<-sapply(str_split(files_all,"\\_no"),"[",1);
+
+gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
+gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
+gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
+
+select_genes<-c( str_c("3_", gene_ids), 
+                 str_c("5_",gene_ids ) )
+
+
+gene_ids<-intersect(gene_ids_in_file,select_genes);
+
+for(i in gene_ids){
+  if(str_detect(i,"CTL") ){
+    next;
+  }
+  
+  meta_5_3(i);
+  #break
+}
+
+dev.off();
+
 

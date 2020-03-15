@@ -7,13 +7,17 @@ library(BSgenome.Hsapiens.UCSC.hg19);
 library(ggplot2);
 options("scipen"=100, "digits"=4)
 hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
-
+# star_abs3_motif
+# star_abs5_motif
+# star_target_only_jc
+# star_target_only_jc_5ss
+# star_target_only_jc_3ss
 
 gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 
 ctl_sj<-read.table("data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
@@ -29,7 +33,7 @@ anno_sj<-read.table("anno/hg19_gencode_intron_from_ucsc.bed",sep = "\t",header =
 anno_sj[,2]<-anno_sj[,2]+1;
 anno_sj<-unname(anno_sj);
 
-colnames(anno_sj)[1:3]<-c("chr","start","end");
+colnames(anno_sj)[1:3]<-c("chr","start","end","intron_id","socre","strand");
 
 
 anno_sj_positive<-anno_sj[anno_sj[,6]=="+",];
@@ -129,6 +133,10 @@ for(g in gene_ids){
                       t_sj[(!t_5_only_sj_set_index)&(!positive_index),"X5_pos"]+3,
                       strand=t_sj[(!t_5_only_sj_set_index)&(!positive_index),"strand2"],as.character=TRUE);
      cat(as.character(t_5_seqs_neg),file=paste0("data/star_abs5_motif/",g,".seq"), sep="\n",append=TRUE);
+     
+     #t_5_seqs<-c(t_5_seqs,t_5_seqs_neg)
+     
+     #weblogo(as.character(t_5_seqs),file.out=paste0("data/star_abs5_motif/",g,".pdf") ,format="pdf" ,open = FALSE )
      
   }
   

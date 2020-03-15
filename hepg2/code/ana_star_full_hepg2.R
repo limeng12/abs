@@ -236,12 +236,10 @@ for(g in gene_ids){
   write.table(t_only_sj_all,file=paste0("hepg2/data/star_target_only_jc/",g,"_no_ctl.bed"), sep="\t",
               quote = FALSE,col.names = FALSE,row.names = FALSE);
   
-  
   #t_5_only_anno_sj_count<-length(setdiff(t_sj[,2],anno_sj[,2]) );
   #t_3_only_anno_sj_count<-length(setdiff(t_sj[,3],anno_sj[,3]) );
   #ctl_5_only_sj_count<-length(setdiff(ctl_sj[,2],t_sj[,2]) );
   #ctl_3_only_sj_count<-length(setdiff(ctl_sj[,3],t_sj[,3]) );
-  
   
   g_53_sj<-rbind(g_53_sj,c(g,t_5_only_sj_count,t_3_only_sj_count,both_unique,
                            t_5_only_sj_count_u12,t_3_only_sj_count_u12,t_5_only_sj_count_gc,

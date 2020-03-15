@@ -15,7 +15,7 @@ gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 
 ctl_sj<-read.table("data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
@@ -26,7 +26,7 @@ ctl_sj<-read.table("data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is =
 
 exon_anno<-read.table("anno/gencode.v29lift37.annotation_exon.gtf",header = FALSE,as.is = TRUE,sep="\t");
 
-exon_anno<-gtf_anno[gtf_anno[,3]=="exon",]
+exon_anno<-exon_anno[exon_anno[,3]=="exon",];
 
 exon_anno<-exon_anno[,c(1,4,5)];
 colnames(exon_anno)<-c("chr","start","end");

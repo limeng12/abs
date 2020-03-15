@@ -98,7 +98,7 @@ gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"CTL_all")];
 
 junc_len<-matrix(nrow=0,ncol=8);
 
-g_53_sj<-matrix(nrow=0,ncol=13);
+g_53_sj<-matrix(nrow=0,ncol=8);
 
 
 for(g in gene_ids){
@@ -224,108 +224,41 @@ for(g in gene_ids){
               file=paste0("hepg2/data/exon_mer_target_only_5ss/",g,"_no_ctl.bed"), sep="\t",
               quote = FALSE,col.names = FALSE,row.names = FALSE);
   
-  
-  t_only_sj_all_bed_small<-t_only_sj_all_bed[ (t_only_sj_all_bed$end-t_only_sj_all_bed$start+1<50),];
-  t_only_sj_all_bed_small<-t_only_sj_all_bed_small[!is.na(t_only_sj_all_bed_small$chr),];
-  
-  
-  
-  if(nrow(t_only_sj_all_bed_small)>0){
-    
-    t_only_sj_all_bed_small_output<-t_only_sj_all_bed_small;
-    
-    #t_only_sj_all_bed_small_output<-anti_join(t_only_sj_all_bed_small_output,exon_coor,by=c("start"="start") );
-  
-    #t_only_sj_all_bed_small_output<-anti_join(t_only_sj_all_bed_small_output,exon_coor,by=c("end"="end") );
-  
-    t_only_sj_all_bed_small_output$start<-t_only_sj_all_bed_small_output$start-1;
-    
-    write.table(cbind(t_only_sj_all_bed_small_output,1),
-              file=paste0("hepg2/data/exon_mer_target_only_small/",g,"_no_ctl.bed"), sep="\t",
-              quote = FALSE,col.names = FALSE,row.names = FALSE);
-  
-  
-  t_only_sj_all_bed_small_range<-with(t_only_sj_all_bed_small,GRanges(seqnames=chr,ranges=IRanges(start=start,end=end),
-                                          strand="*",read_count=read_count) );
-  
-  t_only_sj_all_bed_small_range_count_intron<-countOverlaps(t_only_sj_all_bed_small_range,intron_coor_range,type="within");
-  
-  t_only_sj_all_bed_small_range_intron<-t_only_sj_all_bed_small_range[t_only_sj_all_bed_small_range_count_intron>0,];
-  
-  
-  
-  t_only_sj_all_bed_small_output<-t_only_sj_all_bed_small[t_only_sj_all_bed_small_range_count_intron>0,];
-  
-  t_only_sj_all_bed_small_output$start<-t_only_sj_all_bed_small_output$start-1;
-  
-  write.table(cbind(t_only_sj_all_bed_small_output,1),
-              file=paste0("hepg2/data/exon_mer_target_only_small_intron/",g,"_no_ctl.bed"), sep="\t",
-              quote = FALSE,col.names = FALSE,row.names = FALSE);
-  
-  
-  t_only_sj_all_bed_small_range_count_exon<-countOverlaps(t_only_sj_all_bed_small_range,exon_coor_range,type="within");
-  
-  t_only_sj_all_bed_small_range_exon<-t_only_sj_all_bed_small_range[t_only_sj_all_bed_small_range_count_exon>0,];
-  
-  
-  #write.table(t_only_sj_all_bed_small_range_intron,
-  #            file=paste0("data/exon_mer_target_only_small_intron/",g,"_no_ctl.bed"), sep="\t",
-  #            quote = FALSE,col.names = FALSE,row.names = FALSE);
   g_53_sj<-rbind(g_53_sj,c(g,number_of_0_frame,number_of_1_frame,number_of_2_frame,
-                           sum(t_only_sj_all_bed_small_range_count_exon>0),
-                           sum(t_only_sj_all_bed_small_range_count_intron>0),
-                           nrow(t_only_sj_all_bed_small),
-                           nrow(t_only_sj_all),
-                           #nrow(ctl_sj)-
-                             nrow(t_only_ctl_sj),
-                           nrow(t_only_ctl_sj_small),
-                           
-                           #length(exon_coor_region)-
-                           nrow(t_only_anno_ctl_sj),
-                           nrow(t_only_anno_ctl_sj_small),
-                           sum(t_only_sj_all$read_count,na.rm = TRUE) ) );
-  next;
-  }
-  }
-  
-  g_53_sj<-rbind(g_53_sj,c(g,number_of_0_frame,number_of_1_frame,number_of_2_frame,
-                           0,
-                           0,
+                           #sum(t_only_sj_all_bed_small_range_count_intron>0),
                            #nrow(t_only_sj_all_bed_small),
-                           #nrow(t_only_sj_all),
-                           0,
-                           0,
-                           
-                           #nrow(ctl_sj)-
+                           nrow(t_only_sj_all),
+                           #####nrow(ctl_sj)-
                            nrow(t_only_ctl_sj),
-                           nrow(t_only_ctl_sj_small),
+                           #nrow(t_only_ctl_sj_small),
                            
-                           
-                           
-                           #length(exon_coor_region)-
-                             nrow(t_only_anno_ctl_sj),
-                           nrow(t_only_anno_ctl_sj_small),
-                           
+                           #####length(exon_coor_region)-
+                           nrow(t_only_anno_ctl_sj),
+                           #nrow(t_only_anno_ctl_sj_small),
                            sum(t_only_sj_all$read_count,na.rm = TRUE) ) );
+  
+  }else{
+    g_53_sj<-rbind(g_53_sj,c(g,number_of_0_frame,number_of_1_frame,number_of_2_frame,0,0,0,0) );
+  }
   
 }
 
 
-g_53_sj_data<-data.frame(rbp=g_53_sj[,1],
-                         number_of_0_frame=g_53_sj[,2],
-                         number_of_1_frame=g_53_sj[,3],
-                         number_of_2_frame=g_53_sj[,4],
-                         no_in_ctl_exon_count_small_exon=g_53_sj[,5],
-                         no_in_ctl_exon_count_small_intron=g_53_sj[,6],
-                         no_in_ctl_exon_count_small=g_53_sj[,7],
-                         no_in_ctl_exon_count=g_53_sj[,8],
-                         missed_exon_insh_count=g_53_sj[,9],
-                         missed_exon_small_insh_count=g_53_sj[,10],
-                         
-                         missed_anno_exon_insh_count=g_53_sj[,11],
-                         missed_anno_small_exon_insh_count=g_53_sj[,12],
-                         
-                         total_read_count_support=g_53_sj[,13]);
+  g_53_sj_data<-data.frame(rbp=g_53_sj[,1],
+                           number_of_0_frame=g_53_sj[,2],
+                           number_of_1_frame=g_53_sj[,3],
+                           number_of_2_frame=g_53_sj[,4],
+                           #no_in_ctl_exon_count_small_exon=g_53_sj[,5],
+                           #no_in_ctl_exon_count_small_intron=g_53_sj[,6],
+                           #no_in_ctl_exon_count_small=g_53_sj[,7],
+                           no_in_ctl_exon_count=g_53_sj[,5],
+                           missed_exon_insh_count=g_53_sj[,6],
+                           #missed_exon_small_insh_count=g_53_sj[,10],
+                           
+                           missed_anno_exon_insh_count=g_53_sj[,7],
+                           #missed_anno_small_exon_insh_count=g_53_sj[,12],
+                           
+                           total_read_count_support=g_53_sj[,8]);
 
 
 g_53_sj_data<-unique(g_53_sj_data);
@@ -346,29 +279,30 @@ g_53_sj_data_read[,"corrected no_in_ctl_exon_count"]<-
   as.numeric(as.character(g_53_sj_data_read[,"no_in_ctl_exon_count"]))/
   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
 
-g_53_sj_data_read[,"corrected no_in_ctl_exon_count_small"]<-
-  as.numeric(as.character(g_53_sj_data_read[,"no_in_ctl_exon_count_small"]))/
-  as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
-
-g_53_sj_data_read[,"corrected no_in_ctl_exon_count_small_intron"]<-
-  as.numeric(as.character(g_53_sj_data_read[,"no_in_ctl_exon_count_small_intron"]))/
-  as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
-
 g_53_sj_data_read[,"corrected missed_exon_insh_count"]<-
   as.numeric(as.character(g_53_sj_data_read[,"missed_exon_insh_count"]))/
-  as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
-
-
-g_53_sj_data_read[,"corrected missed_exon_small_insh_count"]<-
-  as.numeric(as.character(g_53_sj_data_read[,"missed_exon_small_insh_count"]))/
-  as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
-
-g_53_sj_data_read[,"corrected missed_anno_small_exon_insh_count"]<-
-  as.numeric(as.character(g_53_sj_data_read[,"missed_anno_small_exon_insh_count"]))/
   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
 
 write.table(g_53_sj_data_read,file="hepg2/result/g_53_exon_all_full_only_read_count.tsv",sep="\t",
             quote = FALSE,col.names = TRUE,row.names = FALSE);
 
 
-
+  
+  # 
+  # g_53_sj_data_read[,"corrected no_in_ctl_exon_count_small"]<-
+  #   as.numeric(as.character(g_53_sj_data_read[,"no_in_ctl_exon_count_small"]))/
+  #   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
+  # 
+  # g_53_sj_data_read[,"corrected no_in_ctl_exon_count_small_intron"]<-
+  #   as.numeric(as.character(g_53_sj_data_read[,"no_in_ctl_exon_count_small_intron"]))/
+  #   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
+  
+  # 
+  # g_53_sj_data_read[,"corrected missed_exon_small_insh_count"]<-
+  #   as.numeric(as.character(g_53_sj_data_read[,"missed_exon_small_insh_count"]))/
+  #   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
+  # 
+  # g_53_sj_data_read[,"corrected missed_anno_small_exon_insh_count"]<-
+  #   as.numeric(as.character(g_53_sj_data_read[,"missed_anno_small_exon_insh_count"]))/
+  #   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
+  

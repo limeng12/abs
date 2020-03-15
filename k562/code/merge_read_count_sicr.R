@@ -8,7 +8,7 @@ gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
-gene_ids<-gene_ids[str_detect(gene_ids,"_inte")]
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 
 files_all<-list.files("data/star_log/");
@@ -43,7 +43,7 @@ for( g in gene_ids){
   gene_read_fr<-rbind(gene_read_fr,c(g,num_mapped_reads,ave_read_length));
   
 }
-           
+
 
 gene_read_fr_fr<-as.data.frame(gene_read_fr,stringsAsFactors=FALSE)
 colnames(gene_read_fr_fr)<-c("g","read_count","read_length");

@@ -4,9 +4,7 @@ library(stringr);
 library(dplyr);
 library(bedr);
 options(scipen=999)
-
 #options("scipen"=100, "digits"=4);
-
 #  scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/exon/\*exon /Users/mengli/Documents/projects/abs/data/exon/
 
 region_len<-function(x){
@@ -22,6 +20,7 @@ gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
 gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
 
 gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
 
 flag_id<-"asdfaf"

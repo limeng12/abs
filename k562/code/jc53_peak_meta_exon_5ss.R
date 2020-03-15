@@ -1,5 +1,3 @@
-#  control 
-#
 setwd("/Users/mengli/Documents/projects/abs");
 library(valr)
 #library(plyr)
@@ -8,22 +6,19 @@ library(bedr)
 library(stringr)
 source("code/multiplot.r");
 #source("code/jc53_peak_meta_minus.R",echo = TRUE);
-source("code/meta_profile/get_k562_high_exp_trans.R");
+#source("code/meta_profile/get_k562_high_exp_trans.R");
 
 
 system("sh code/run_sh/generate_bedgraph_from_cryptic_exon_5ss.sh");
 
-system("scp /Users/mengli/Documents/projects/abs/data/exon_mer_target_only_bedgraph/* limeng@10.10.114.148:/home/limeng/Documents/projects/abs/data/exon_mer_target_only_bedgraph/");
+#system("scp /Users/mengli/Documents/projects/abs/data/exon_mer_target_only_bedgraph/* limeng@10.10.114.148:/home/limeng/Documents/projects/abs/data/exon_mer_target_only_bedgraph/");
 
 ####high express gene should###
 genomefile <- valr_example('hg19.chrom.sizes.gz');
 
 genome <- read_genome(genomefile);
 
-
 #TES_region<-read_bed("anno/TES_high.bed",n_fields = 6);
-
-
 
 ###only use intron in high expressed transcript (TPM>10) and in protein coding genes to avoid bias
 #intron<-read_bed("anno/intron_coor_gencode_high.bed",n_fields = 6);
@@ -89,30 +84,10 @@ bp_site<-bp_site[sample(1:nrow(bp_site),20000 ),];
 meta_5_3<-function(rbp){
   
   
-  
-  #if(!str_detect(y_file,"plus.bedgraph") | str_detect(y_file,"input") ){
-  #  return(0);
-  #}
-  
-  #y_file<-"AQR_1plus.bedgraph";
-  # rbp<-"TIA1_1"
-  
-  #"ZNF800_2plus.bedgraph"
-  #"ZRANB2_1minus.bedgraph"
-  #  rbp<-gene_ids[1];
-  #y<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/exon_mer_target_only_bedgraph/",
-   #                       rbp,"_no_ctl.bed.bedgraph") );
-  ##    chrom  start   end   value
-  #y<-read_bed(paste0("/Users/mengli/Documents/projects/abs/ENCSR000AEN_FLAG_RNA_no_ctl.bed.bedgraph") ,n_fields=5);
-  #y<-read_bed(paste0("/Users/mengli/Documents/projects/abs/data/exon_mer_target_only_bedgraph/",
-  #                       rbp,"_no_ctl.bed.bedgraph"), n_fields=5 );
-  
+
   y<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/data/exon_mer_target_only_bedgraph/",
                                             rbp,"_no_ctl.bed.bedgraph") );
   y_pos<-y;
-  #colnames(y)<-c("chrom","start","end","value","score");
-  #y$value<-as.numeric(y$value)
-  #y_pos<-y[y$score=="+",1:4];
   
   print(rbp);
   
@@ -305,20 +280,18 @@ pdf("result/jc_meta_exon_5ss.pdf", width=15, height = 8);
 library(stringr);
 files_all<-list.files("/Users/mengli/Documents/projects/abs/data/exon_mer_target_only_bedgraph");
 #cut -f1-3,5 star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-gene_ids<-sapply(str_split(files_all,"\\_no"),"[",1);
+gene_ids_file<-sapply(str_split(files_all,"\\_no"),"[",1);
 
 
-select_genes<-readLines("samples/gene_id.txt");
+#select_genes<-readLines("samples/gene_id.txt");
 
-gene_ids<-intersect(gene_ids,select_genes);
-#gene_ids<-unique(gene_ids[!str_detect(files_all,"input")]);
-#gene_ids<-readLines("samples/gene_id.txt");
-#rbp<-"ATP5C1"
-#gene_ids<-gene_ids[1:1];
-#gene_ids<-gene_ids[1:5];
-#gene_ids<-"AQR";
+gene_ids_sicr<-(unique(readLines("samples/gene_id_sicr.txt") ) );
+gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
+gene_ids<-c(gene_ids_bren,gene_ids_sicr);
+gene_ids<-gene_ids[!str_detect(gene_ids,"_inte")]
 
-#gene_ids<-gene_ids[str_detect(gene_ids,"AQR")];
+
+gene_ids<-intersect(gene_ids_file,gene_ids);
 
 for(i in gene_ids){
   if(str_detect(i,"CTL") ){

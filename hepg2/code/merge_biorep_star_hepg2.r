@@ -3,7 +3,6 @@ setwd("/Users/mengli/Documents/projects/abs");
 library(stringr);
 library(dplyr);
 
-
 #   find star/ -type f -name '*SJ.out.tab' -exec cp '{}' star_re/ ';'
 #   find star/ -type f -name '*.final.out' -exec cp '{}' star_log/ ';'
 
@@ -11,7 +10,6 @@ library(dplyr);
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/hepg2/star_log/\*.final.out /Users/mengli/Documents/projects/abs/hepg2/data/star_log/
 
 gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ); 
-
 
 flag_id<-"nothing"
 

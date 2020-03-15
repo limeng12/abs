@@ -13,50 +13,12 @@ source("code/multiplot.r");
 
 system("sh hepg2/code/run_sh/generate_bedgraph_from_cryptic_exon_5ss.sh");
 #
-system("scp /Users/mengli/Documents/projects/abs/hepg2/data/exon_mer_target_only_bedgraph/* limeng@10.10.114.148:/home/limeng/Documents/projects/abs/data/exon_mer_target_only_bedgraph_hepg2/");
+#system("scp /Users/mengli/Documents/projects/abs/hepg2/data/exon_mer_target_only_bedgraph/* limeng@10.10.114.148:/home/limeng/Documents/projects/abs/data/exon_mer_target_only_bedgraph_hepg2/");
 
 ####high express gene should###
 genomefile <- valr_example('hg19.chrom.sizes.gz');
 
 genome <- read_genome(genomefile);
-
-
-#TSS_region<-read_bed("anno/TSS_high.bed",n_fields = 6);
-# 
-# transcript_region<-read_bed("anno/transcripts_high.bed",n_fields = 6);
-# print(paste0("Number of bp Trans used: ", nrow(transcript_region) ) );
-# transcript_region$start<-transcript_region$start+1
-# 
-# TSS_region<-transcript_region;
-# TES_region<-transcript_region;
-# 
-# for(i in 1:nrow(transcript_region)){
-#   if(transcript_region[i,"strand"]=="+"){
-#     TSS_region[i,"end"]<-TSS_region[i,"start"];
-#     
-#     TES_region[i,"start"]<-TES_region[i,"end"];   
-#     
-#   }else{
-#     TSS_region[i,"start"]<-TSS_region[i,"end"];
-#     
-#     TES_region[i,"end"]<-TES_region[i,"start"];   
-#     
-#   }
-#   
-# }
-# 
-# #TSS_region<-read_bed("anno/TSS_high.bed",n_fields = 6);
-# #TES_region<-read_bed("anno/TES_high.bed",n_fields = 6);
-# 
-# 
-# print(paste0("Number of bp TSS used: ", nrow(TSS_region) ) );
-# print(paste0("Number of bp TES used: ", nrow(TES_region) ) );
-
-
-
-#TES_region<-read_bed("anno/TES_high.bed",n_fields = 6);
-
-
 
 ###only use intron in high expressed transcript (TPM>10) and in protein coding genes to avoid bias
 #intron<-read_bed("anno/intron_coor_gencode_high.bed",n_fields = 6);
@@ -343,16 +305,12 @@ pdf("hepg2/result/jc_meta_exon_5ss_hepg2.pdf", width=15, height = 8);
 library(stringr);
 files_all<-list.files("/Users/mengli/Documents/projects/abs/hepg2/data/exon_mer_target_only_bedgraph");
 #cut -f1-3,5 star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-gene_ids<-sapply(str_split(files_all,"\\_no"),"[",1);
-#gene_ids<-unique(gene_ids[!str_detect(files_all,"input")]);
-#gene_ids<-readLines("samples/gene_id.txt");
-#rbp<-"ATP5C1"
-#gene_ids<-gene_ids[1:1];
-#gene_ids<-gene_ids[1:5];
-#gene_ids<-"AQR";
+gene_ids_in_file<-sapply(str_split(files_all,"\\_no"),"[",1);
 
-#gene_ids<-gene_ids[str_detect(gene_ids,"AQR")];
-#gene_ids<-gene_ids[str_detect(gene_ids,"CDC40")];
+gene_ids<-unique(readLines("hepg2/samples/gene_id_hepg2.txt") ) 
+
+gene_ids<-intersect(gene_ids_in_file,gene_ids);
+
 
 for(i in gene_ids){
   if(str_detect(i,"CTL") ){
