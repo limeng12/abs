@@ -1,5 +1,3 @@
-#  control 
-#
 setwd("/Users/mengli/Documents/projects/abs");
 library(valr)
 library(plyr)
@@ -43,16 +41,6 @@ print(paste0("Number of bp intron used: ", nrow(intron) ) );
 
 
 meta_5_3<-function(rbp){
-  #  rbp<-"3_ENCSR015TOB_x16"
-  #if(!str_detect(y_file,"plus.bedgraph") | str_detect(y_file,"input") ){
-  #  return(0);
-  #}
-  
-  #y_file<-"AQR_1plus.bedgraph";
-  # rbp<-"TIA1_1"
-  
-  #"ZNF800_2plus.bedgraph"         
-  #"ZRANB2_1minus.bedgraph"
   
   y<-read_bedgraph(paste0("/Users/mengli/Documents/projects/abs/fly/data/star_target_only_jc_bedgraph/",
                           rbp,"_no_ctl.bed.bedgraph") );
@@ -190,19 +178,20 @@ meta_5_3<-function(rbp){
   
 }
 
+
 pdf("fly/result/jc_meta_cryptic_site.pdf", width=15, height = 8);
 library(stringr);
 
 files_all<-list.files("/Users/mengli/Documents/projects/abs/fly/data/star_target_only_jc_bedgraph");
 #cut -f1-3,5 star_target_only_jc/AQR_no_ctl.bed > star_target_only_jc_bedgraph/AQR_no_ctl.bedgraph
-gene_ids<-sapply(str_split(files_all,"\\_no_ctl"),"[",1);
-#gene_ids<-unique(gene_ids[!str_detect(files_all,"input")]);
-#gene_ids<-readLines("samples/gene_id.txt");
-#rbp<-"ATP5C1"
-#gene_ids<-c(str_c("3_",gene_pol_ids),str_c("5_",gene_pol_ids) );
-#gene_ids<-gene_ids[1:1];
-#gene_ids<-gene_ids[1:5];
-#gene_ids<-"AQR";
+gene_ids_in_file<-sapply(str_split(files_all,"\\_no_ctl"),"[",1);
+
+gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt") ) ));
+
+select_genes<-c( str_c("3_", gene_ids), 
+                 str_c("5_",gene_ids ) );
+
+gene_ids<-intersect(gene_ids_in_file,select_genes);
 
 for(i in gene_ids){
   meta_5_3(i);
@@ -211,7 +200,4 @@ for(i in gene_ids){
 
 dev.off();
 
-
-#"ZNF800_2plus.bedgraph"         
-#"ZRANB2_1minus.bedgraph"
 

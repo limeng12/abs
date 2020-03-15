@@ -3,16 +3,16 @@ setwd("/Users/mengli/Documents/projects/abs");
 library(stringr);
 library(dplyr);
 
-
 #   find /picb/rnasys2/limeng/fly/star_fly/ -type f -name '*SJ.out.tab' -exec cp '{}' /picb/rnasys2/limeng/fly/star_fly_re/ ';'
 #   find /picb/rnasys2/limeng/fly/star_fly/ -type f -name '*.final.out' -exec cp '{}' /picb/rnasys2/limeng/fly/star_fly_log/ ';'
-
 
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/fly/star_fly_re/\* /Users/mengli/Documents/projects/abs/fly/data/star_fly/
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/fly/star_fly_log/\* /Users/mengli/Documents/projects/abs/fly/data/star_log_fly/
 
+#gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt"),readLines("fly/samples/gene_id_fly_all.txt") ) ));
 
-gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt"),readLines("fly/samples/gene_id_fly_all.txt") ) ));
+gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt") ) ));
+
 
 flag_id<-"nothing";
 
@@ -49,45 +49,8 @@ for( g in gene_ids){
   
   colnames(sj_all)<-c("chr","start","end","strand","type","anno","uni_reads","mul_reads","overhang");
   
- # sj_all<-sj_all[,c("chr","start","end","strand","type","uni_reads")];
-  
-  #sj_1<-read.table(paste0("data/star_fly/",g,"_1SJ.out.tab"),header = FALSE,as.is = TRUE);
-  #sj_1_filter<-sj_1[(sj_1$type!=0) & (sj_1$uni_reads>=5),];
-  #sj_1_filter<-sj_1[(sj_1$type!=0),c("chr","start","end","strand","type","uni_reads")];
-  
-  #sj_all<-full_join(sj_1_filter,sj_2_filter,
-  #                   by=c("chr"="chr","start"="start","end"="end","strand"="strand","type"="type") )
-  #
-  #sj_all[is.na(sj_all)]<-0;
-  
-  #sj_all_mer<-cbind(sj_all[,1:5],
-   #             (sj_all[,"uni_reads.x"]+sj_all[,"uni_reads.y"]) );
-  
-  
-  #sj_all<-rbind(sj_1_filter,sj_2_filter);
-  
-  # sj_all_mer<-ddply(sj_all,.(chr,start,end,strand,type),function(x){
-  #   
-  #   #type_s<-paste(x[,"type"],collapse = ",");
-  #   uni_reads_c<-sum(x[,"uni_reads"]);
-  #   
-  #   uni_reads_c
-  #   #paste0("type=",type_s," unique_read_c=",uni_reads_c);
-  # });
-  # 
-  # 
-  # colnames(sj_all_mer)[6]<-"anno";
-  # 
   sj_all_mer<-sj_all %>% dplyr::group_by(chr,start,end,strand,type) %>% dplyr::summarise(anno=sum(uni_reads) );
   
-  
-  
-  #minimium number reads for control is 1, for rbp is 2
-  #if(str_detect(g,"Control") | str_detect(g,"CTL")  ) {
-  #  sj_all_mer<-sj_all_mer[sj_all_mer$anno>0,];
-  #}else{
-  #  sj_all_mer<-sj_all_mer[sj_all_mer$anno>1,];
-  #}
   
   
   #x5_pos is the postion of 5'ss
@@ -126,45 +89,6 @@ for( g in gene_ids){
   
   sj_all_mer[(sj_all_mer$type==6),"X5_n"]<-"AT"
   sj_all_mer[(sj_all_mer$type==6),"X3_n"]<-"AC"
-  
-  ################################################################################################
-  # sj_all_mer[(sj_all_mer$type==1)&(sj_all_mer$strand==1),"X5_n"]<-"GT";  
-  # sj_all_mer[(sj_all_mer$type==1)&(sj_all_mer$strand==2),"X5_n"]<-"CT";  
-  # 
-  # sj_all_mer[(sj_all_mer$type==2)&(sj_all_mer$strand==1),"X5_n"]<-"CT";
-  # sj_all_mer[(sj_all_mer$type==2)&(sj_all_mer$strand==2),"X5_n"]<-"GT";
-  # 
-  # sj_all_mer[(sj_all_mer$type==3)&(sj_all_mer$strand==1),"X5_n"]<-"GC";
-  # sj_all_mer[(sj_all_mer$type==3)&(sj_all_mer$strand==2),"X5_n"]<-"CT";
-  # 
-  # sj_all_mer[(sj_all_mer$type==4)&(sj_all_mer$strand==1),"X5_n"]<-"CT";
-  # sj_all_mer[(sj_all_mer$type==4)&(sj_all_mer$strand==2),"X5_n"]<-"GC";
-  # 
-  # sj_all_mer[(sj_all_mer$type==5)&(sj_all_mer$strand==1),"X5_n"]<-"AT";
-  # sj_all_mer[(sj_all_mer$type==5)&(sj_all_mer$strand==2),"X5_n"]<-"GT";
-  # 
-  # sj_all_mer[(sj_all_mer$type==6)&(sj_all_mer$strand==1),"X5_n"]<-"GT";
-  # sj_all_mer[(sj_all_mer$type==6)&(sj_all_mer$strand==2),"X5_n"]<-"AT";
-  # ################################################################################################
-  # 
-  # sj_all_mer[(sj_all_mer$type==1)&(sj_all_mer$strand==1),"X3_n"]<-"AG";
-  # sj_all_mer[(sj_all_mer$type==1)&(sj_all_mer$strand==2),"X3_n"]<-"AC";
-  # 
-  # sj_all_mer[(sj_all_mer$type==2)&(sj_all_mer$strand==1),"X3_n"]<-"AC";
-  # sj_all_mer[(sj_all_mer$type==2)&(sj_all_mer$strand==2),"X3_n"]<-"AG";
-  # 
-  # sj_all_mer[(sj_all_mer$type==3)&(sj_all_mer$strand==1),"X3_n"]<-"AG";
-  # sj_all_mer[(sj_all_mer$type==3)&(sj_all_mer$strand==2),"X3_n"]<-"GC";
-  # 
-  # sj_all_mer[(sj_all_mer$type==4)&(sj_all_mer$strand==1),"X3_n"]<-"GC";
-  # sj_all_mer[(sj_all_mer$type==4)&(sj_all_mer$strand==2),"X3_n"]<-"AG";
-  # 
-  # sj_all_mer[(sj_all_mer$type==5)&(sj_all_mer$strand==1),"X3_n"]<-"AC";
-  # sj_all_mer[(sj_all_mer$type==5)&(sj_all_mer$strand==2),"X3_n"]<-"AT";
-  # 
-  # sj_all_mer[(sj_all_mer$type==6)&(sj_all_mer$strand==1),"X3_n"]<-"AT";
-  # sj_all_mer[(sj_all_mer$type==6)&(sj_all_mer$strand==2),"X3_n"]<-"AC";
-  ################################################################################################
   
   sj_all_mer<-sj_all_mer[,c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno")];
   
@@ -215,16 +139,6 @@ for( g in gene_ids_ctl[-1]){
 }
 
 
-# sj_all_mer<-ddply(sj_all,.(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n),function(x){
-#   
-#   c(paste0(x[,"anno"],collapse = " "), length(unique(x[,"rbp_count"]) )  );
-#   
-# });
-
-#sj_all_mer<-sj_all %>% group_by(chr,start,end,strand,type) %>% summarise(anno=sum(uni_reads));
-#sj_all_mer<-sj_all %>% dplyr::group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
-#  dplyr::summarise(anno=paste0(anno,collapse = " "),rbp_count=length(unique(rbp_count) ));
-
 sj_all_mer<-sj_all %>% dplyr::group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
   dplyr::summarise(anno=paste0(anno,collapse = " "),rbp_count=n() );
 
@@ -237,5 +151,15 @@ write.table(sj_all_mer,file = paste0("fly/data/star_mer/CTL_all_tab"),quote = FA
             row.names = FALSE,col.names = TRUE );
 
 
+
+# sj_all_mer<-ddply(sj_all,.(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n),function(x){
+#   
+#   c(paste0(x[,"anno"],collapse = " "), length(unique(x[,"rbp_count"]) )  );
+#   
+# });
+
+#sj_all_mer<-sj_all %>% group_by(chr,start,end,strand,type) %>% summarise(anno=sum(uni_reads));
+#sj_all_mer<-sj_all %>% dplyr::group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
+#  dplyr::summarise(anno=paste0(anno,collapse = " "),rbp_count=length(unique(rbp_count) ));
 
 

@@ -2,22 +2,17 @@ setwd("/Users/mengli/Documents/projects/abs");
 #library(plyr);
 library(stringr);
 library(dplyr);
-#library(BSgenome);
-#library(BSgenome.Hsapiens.UCSC.hg19);
+library(BSgenome);
+library(BSgenome.Dmelanogaster.UCSC.dm6);
 library(ggplot2);
 library(RWebLogo);
-
 options("scipen"=100, "digits"=4);
 
 dm_genome <- getBSgenome("BSgenome.Dmelanogaster.UCSC.dm6");
 
+#gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt"),readLines("fly/samples/gene_id_fly_all.txt") ) ));
 
-gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt"),readLines("fly/samples/gene_id_fly_all.txt") ) ));
-#gene_ids<-gene_ids_fly;
-
-#gene_ids<-(readLines("samples/gene_id.txt") );
-#gene_ids<-c(gene_ids,gene_ids_rRNA);
-#writeLines(gene_ids,con=file("samples/gene_id.txt") );
+gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt") ) ));
 
 
 ctl_sj<-read.table("fly/data/star_mer/CTL_all_tab",sep = "\t",header = TRUE, as.is = TRUE);
@@ -41,19 +36,15 @@ anno_sj<-unname(anno_sj);
 anno_sj_positive<-anno_sj[anno_sj[,6]=="+",];
 anno_sj_negative<-anno_sj[anno_sj[,6]=="-",];
 
-
 anno_5ss<-unique( c(str_c(anno_sj_positive[,1],anno_sj_positive[,2]),
             str_c(anno_sj_negative[,1],anno_sj_negative[,3])  )  );
-#colnames(anno_5ss)<-c("chr","X5_pos");
 
 
 anno_3ss<-unique( c(str_c(anno_sj_positive[,1],anno_sj_positive[,3]),
             str_c(anno_sj_negative[,1],anno_sj_negative[,2])  ) );
-#colnames(anno_3ss)<-c("chr","X3_pos");
 
 
 #total_5ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],ctl_sj_high_confi[,"X5_pos"] ), anno_5ss) );
-
 #total_3ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],ctl_sj_high_confi[,"X3_pos"] ), anno_3ss) );
 
 total_5ss<-anno_5ss;
@@ -102,11 +93,7 @@ for(g in gene_ids){
                                 anno_5ss   );
   #t_5_only_sj_count<-sum(!t_5_only_sj_set_index);
   
-  
-  
   ctl_5_only_sj_count<-length(unique(setdiff(total_5ss, str_c(t_sj[,"chr"],t_sj[,"X5_pos"])  )  ) );
-  
-  
   
   #t_5_cano_per<-sum(str_detect(t_5_only_sj_set,"GT")) /length(t_5_only_sj_set);
   t_5_only_sj_set<-unique(str_c(t_sj[,"chr"],t_sj[,"X5_pos"],t_sj[,"X5_n"])[!t_5_only_sj_set_index]);
@@ -115,8 +102,6 @@ for(g in gene_ids){
   
   t_5_only_sj_count_gc<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"GC")] );
   t_5_only_sj_count<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"GT")] );
-  
-  
   
   t_sj_in_only_5ss_fr<-t_sj[!t_5_only_sj_set_index,c("chr","X5_pos","X5_pos","strand")];
   
@@ -131,42 +116,41 @@ for(g in gene_ids){
     (str_detect(t_sj$chr,fixed("2L"))|
        str_detect(t_sj$chr,fixed("2R")) | str_detect(t_sj$chr,fixed("3L"))  | str_detect(t_sj$chr,fixed("3R")) |
         str_detect(t_sj$chr,fixed("Y")) | str_detect(t_sj$chr,fixed("X")) ) & (!str_detect(t_sj$chr,"Y_"));
+  negative_index<-(t_sj$strand2=="-" ) & 
+    (str_detect(t_sj$chr,fixed("2L"))|
+       str_detect(t_sj$chr,fixed("2R")) | str_detect(t_sj$chr,fixed("3L"))  | str_detect(t_sj$chr,fixed("3R")) |
+       str_detect(t_sj$chr,fixed("Y")) | str_detect(t_sj$chr,fixed("X")) ) & (!str_detect(t_sj$chr,"Y_"));
+  
   
   if(sum(!t_5_only_sj_set_index)>0){
-     
      
      t_5_seqs<-getSeq(dm_genome,str_c("chr",t_sj[(!t_5_only_sj_set_index)&positive_index,"chr"]),
                       t_sj[(!t_5_only_sj_set_index)&positive_index,"X5_pos"]-3,
                       t_sj[(!t_5_only_sj_set_index)&positive_index,"X5_pos"]+5,
                       strand=t_sj[(!t_5_only_sj_set_index)&positive_index,"strand2"],as.character=TRUE);
-     cat(as.character(t_5_seqs),file=paste0("fly/data/star_abs5_motif/",g,".seq"), sep="\n");
+     #cat(as.character(t_5_seqs),file=paste0("fly/data/star_abs5_motif/",g,".seq"), sep="\n");
      
-     t_5_seqs_neg<-getSeq(hg19_genome,t_sj[(!t_5_only_sj_set_index)&(!positive_index),"chr"],
-                      t_sj[(!t_5_only_sj_set_index)&(!positive_index),"X5_pos"]-5,
-                      t_sj[(!t_5_only_sj_set_index)&(!positive_index),"X5_pos"]+3,
-                      strand=t_sj[(!t_5_only_sj_set_index)&(!positive_index),"strand2"],as.character=TRUE);
-     cat(as.character(t_5_seqs_neg),file=paste0("fly/data/star_abs5_motif/",g,".seq"), sep="\n",append=TRUE);
+     t_5_seqs_neg<-getSeq(dm_genome,str_c("chr",t_sj[(!t_5_only_sj_set_index)&(negative_index),"chr"]),
+                      t_sj[(!t_5_only_sj_set_index)&(negative_index),"X5_pos"]-5,
+                      t_sj[(!t_5_only_sj_set_index)&(negative_index),"X5_pos"]+3,
+                      strand=t_sj[(!t_5_only_sj_set_index)&(negative_index),"strand2"],as.character=TRUE);
+     #cat(as.character(t_5_seqs_neg),file=paste0("fly/data/star_abs5_motif/",g,".seq"), sep="\n",append=TRUE);
      
      t_5_seqs<-c(t_5_seqs,t_5_seqs_neg)
-     
      
      weblogo(as.character(t_5_seqs),file.out=paste0("fly/data/star_abs5_motif/",g,".pdf") ,format="pdf" ,open = FALSE )
      
    }
   
   
-  
   t_sj_3only_nondup_index<-!duplicated(t_sj[,c("chr","X3_pos","X3_n")] );
   
-
   #t_3_only_sj_count<-length(setdiff(t_sj[,3],ctl_sj[,3]) );
   t_3_only_sj_set_index<-(str_c(t_sj[,"chr"],t_sj[,"X3_pos"],t_sj[,"X3_n"]) %in%
                            str_c(ctl_sj[,"chr"],ctl_sj[,"X3_pos"],ctl_sj[,"X3_n"]) ) |
                               (str_c(t_sj[,"chr"],t_sj[,"X3_pos"] ) %in%
                                  anno_3ss  )
   #t_3_only_sj_count<-sum(!t_3_only_sj_set_index);
-  
-
   
   t_3_only_sj_set<-unique(str_c(t_sj[,"chr"],t_sj[,"X3_pos"],t_sj[,"X3_n"])[!t_3_only_sj_set_index])
                            
@@ -182,19 +166,25 @@ for(g in gene_ids){
        str_detect(t_sj$chr,fixed("2R")) | str_detect(t_sj$chr,fixed("3L"))  | str_detect(t_sj$chr,fixed("3R")) |
        str_detect(t_sj$chr,fixed("Y")) | str_detect(t_sj$chr,fixed("X")) ) & (!str_detect(t_sj$chr,"Y_"));
   
+  negative_index<-(t_sj$strand2=="-")  & 
+    (str_detect(t_sj$chr,fixed("2L")) |
+       str_detect(t_sj$chr,fixed("2R")) | str_detect(t_sj$chr,fixed("3L"))  | str_detect(t_sj$chr,fixed("3R")) |
+       str_detect(t_sj$chr,fixed("Y")) | str_detect(t_sj$chr,fixed("X")) ) & (!str_detect(t_sj$chr,"Y_"));
+  
+  
   if(sum(!t_3_only_sj_set_index)>0){
     t_3_seqs<-getSeq(dm_genome,str_c("chr",t_sj[(!t_3_only_sj_set_index)&positive_index,"chr"]),
                       t_sj[(!t_3_only_sj_set_index)&positive_index,"X3_pos"]-19,
                       t_sj[(!t_3_only_sj_set_index)&positive_index,"X3_pos"]+3,
                       strand=t_sj[(!t_3_only_sj_set_index)&positive_index,"strand2"],as.character=TRUE);
-     cat(as.character(t_3_seqs),file=paste0("fly/data/star_abs3_motif/",g,".seq"), sep="\n");
+    #cat(as.character(t_3_seqs),file=paste0("fly/data/star_abs3_motif/",g,".seq"), sep="\n");
     
     
-    t_3_seqs_neg<-getSeq(hg19_genome,t_sj[(!t_3_only_sj_set_index)&(!positive_index),"chr"],
-                     t_sj[(!t_3_only_sj_set_index)&(!positive_index),"X3_pos"]-3,
-                     t_sj[(!t_3_only_sj_set_index)&(!positive_index),"X3_pos"]+19,
-                     strand=t_sj[(!t_3_only_sj_set_index)&(!positive_index),"strand2"],as.character=TRUE);
-    cat(as.character(t_3_seqs_neg),file=paste0("fly/data/star_abs3_motif/",g,".seq"), sep="\n",append = TRUE);
+    t_3_seqs_neg<-getSeq(dm_genome,str_c("chr",t_sj[(!t_3_only_sj_set_index)&(negative_index),"chr"]),
+                     t_sj[(!t_3_only_sj_set_index)&(negative_index),"X3_pos"]-3,
+                     t_sj[(!t_3_only_sj_set_index)&(negative_index),"X3_pos"]+19,
+                     strand=t_sj[(!t_3_only_sj_set_index)&(negative_index),"strand2"],as.character=TRUE);
+    #cat(as.character(t_3_seqs_neg),file=paste0("fly/data/star_abs3_motif/",g,".seq"), sep="\n",append = TRUE);
     
     t_3_seqs<-c(t_3_seqs,t_3_seqs_neg);
     
@@ -222,9 +212,7 @@ for(g in gene_ids){
   
   both_unique<-sum((!t_5_only_sj_set_index) & (!t_3_only_sj_set_index) );
   
-  
   ctl_3_only_sj_count<-length(unique(setdiff(total_3ss,str_c(t_sj[,"chr"],t_sj[,"X3_pos"]) )  ));
-  
   
   #t_3_cano_per<-sum(str_detect(t_3_only_sj_set,"AG"))/length(t_3_only_sj_set);
   
@@ -240,7 +228,6 @@ for(g in gene_ids){
   
   junc_len<-rbind(junc_len,c(g,nrow(t_only_sj_all),
                              as.vector(summary(abs(t_only_sj_all$X3_pos-t_only_sj_all$X5_pos))) ) );
-  
   
   
   is_neg<-t_only_sj_all[,"strand"]==2;
@@ -262,26 +249,19 @@ for(g in gene_ids){
   }
   
   
-  
   write.table(t_only_sj_all,file=paste0("fly/data/star_target_only_jc/",g,"_no_ctl.bed"), sep="\t",
               quote = FALSE,col.names = FALSE,row.names = FALSE);
   
   
   #t_5_only_anno_sj_count<-length(setdiff(t_sj[,2],anno_sj[,2]) );
-  
   #t_3_only_anno_sj_count<-length(setdiff(t_sj[,3],anno_sj[,3]) );
-  
-  
   #ctl_5_only_sj_count<-length(setdiff(ctl_sj[,2],t_sj[,2]) );
-  
   #ctl_3_only_sj_count<-length(setdiff(ctl_sj[,3],t_sj[,3]) );
-  
   
   g_53_sj<-rbind(g_53_sj,c(g,t_5_only_sj_count,t_3_only_sj_count,both_unique,
                            t_5_only_sj_count_u12,t_3_only_sj_count_u12,t_5_only_sj_count_gc,
                            ctl_5_only_sj_count,ctl_3_only_sj_count ) );
   #t_5_cano_per,t_3_cano_per,) )
-  
   
 }
 
@@ -299,9 +279,6 @@ write.table(g_53_sj_data,file="fly/result/g_53_sj_all_full_fly.tsv",sep="\t",
             quote = FALSE,col.names = TRUE,row.names = FALSE);
 
 
-#junc_len_data<-as.data.frame(junc_len,stringsAsFactors=FALSE);
-#colnames(junc_len_data)<-c("g","num","min","1st Qu","Median","Mean","3rd Qu.","Max");
-
 
 gene_read_fr_fr<-read.table("fly/result/rbp_read_count_map.tsv",sep = "\t",as.is = TRUE,header = TRUE);
 
@@ -314,6 +291,10 @@ g_53_sj_data_read[,"corrected cryptic 3'ss"]<-as.numeric(g_53_sj_data_read[,"cry
 g_53_sj_data_read[,"corrected cryptic 5'ss"]<-as.numeric(g_53_sj_data_read[,"cryptic 5'ss"])/
   as.numeric(as.character(g_53_sj_data_read$read_count))*(10^6);
 
+write.table(g_53_sj_data_read,file="fly/result/g_53_sj_all_read_count_fly.tsv",sep="\t",
+             quote = FALSE,col.names = TRUE,row.names = FALSE);
+
+
 
 #g_53_sj_data_read$X3_X5_ratio<-g_53_sj_data_read$X3/g_53_sj_data_read$X5;
 
@@ -321,150 +302,3 @@ g_53_sj_data_read[,"corrected cryptic 5'ss"]<-as.numeric(g_53_sj_data_read[,"cry
 #                                "cryptic whole junction","U12 cryptic 5'ss","U12 cryptic 3'ss","CG type 5'ss",
 #                                "read_count","cryptic 3'ss correct read count","cryptic 3'ss/cryptic 5'ss");
 
-write.table(g_53_sj_data_read,file="fly/result/g_53_sj_all_read_count_fly.tsv",sep="\t",
-             quote = FALSE,col.names = TRUE,row.names = FALSE);
-
-
-
-
-
-
-#write.table(junc_len_data,file="result/junc_len.tsv",sep="\t",
-#            quote = FALSE,col.names = TRUE,row.names = FALSE);
-#gene_ids<-readLines("samples/gene_id.txt");
-
-#gene_ids_noallctl<-gene_ids[!str_detect(gene_ids,"CTL_")];
-
-# 
-# gene_ids_rRNA<-unique(readLines("samples/gene_id_rRNA.txt") );
-#        
-# gene_read_count<-list();
-# gene_read_fr<-matrix(nrow=0,ncol=2);
-# 
-# for(g in gene_ids_rRNA){
-#   star_log_t1<-read.table(paste0("data/star_log_rRNA/",g,"_1Log.final.out"),
-#                           sep = "\t",header = FALSE,fill = TRUE,as.is = TRUE);
-#   
-#   #star_log_t_val1<-str_sub(star_log_t1,50);
-#   
-#   num_mapped_reads1<-as.numeric(star_log_t1[8,2]);
-#   
-#   #num_splices1<-star_log_t1[11,2];
-#   
-#   star_log_t2<-read.table(paste0("data/star_log_rRNA/",g,"_2Log.final.out"),
-#                           sep = "\t",header = FALSE,fill = TRUE,as.is = TRUE);
-#   
-#   #star_log_t_val2<-str_sub(star_log_t2,50);
-#   
-#   num_mapped_reads2<-as.numeric(star_log_t2[8,2]);
-#   
-#   num_splices2<-star_log_t2[11,2];
-#   
-#   gene_read_count[g]<-num_mapped_reads1+num_mapped_reads2;
-#   
-#   g<-str_c("rRNA_",g);
-#   gene_read_fr<-rbind(gene_read_fr,c(g,num_mapped_reads1+num_mapped_reads2) );
-#   
-# }
-# 
-# gene_read_fr_fr_rRNA<-as.data.frame(gene_read_fr,stringsAsFactors=FALSE)
-# colnames(gene_read_fr_fr_rRNA)<-c("g","read_count");
-# 
-# 
-# 
-# gene_read_fr_fr<-rbind(gene_read_fr_fr,gene_read_fr_fr_rRNA );
-# 
-# write.table(gene_read_fr_fr,file="result/rbp_read_count_map.tsv",
-#             sep="\t",quote = FALSE,col.names = TRUE,row.names = FALSE)
-# 
-# 
-# 
-# # gene_read_fr_fr<-read.table("result/rbp_read_count_map.tsv",sep = "\t",as.is = TRUE,header = TRUE);
-
-# 
-# g_53_sj_data_read<-inner_join(g_53_sj_data,gene_read_fr_fr,by=c("rbp"="g") );
-# 
-# g_53_sj_data_read[,"corrected cryptic 3'ss"]<-as.numeric(g_53_sj_data_read[,"cryptic 3'ss"])/
-#   as.numeric(g_53_sj_data_read$read_count)*(10^6);
-# 
-# 
-# #g_53_sj_data_read$X3_X5_ratio<-g_53_sj_data_read$X3/g_53_sj_data_read$X5;
-# 
-# colnames(g_53_sj_data_read)<-c("rbp","cryptic 5'ss","cryptic 3'ss",
-#                                "cryptic whole junction","U12 cryptic 5'ss","U12 cryptic 3'ss","CG type 5'ss",
-#                                "read_count","cryptic 3'ss correct read count","cryptic 3'ss/cryptic 5'ss");
-# 
-# write.table(g_53_sj_data_read,file="result/g_53_sj_all_read_count_rRNA.tsv",sep="\t",
-#             quote = FALSE,col.names = TRUE,row.names = FALSE);
-# 
-# 
-
-
-
-
-
-# gene_read_fr_fr<-read.table("result/k562_star_read_count.tsv",sep = "\t",as.is = TRUE,header = TRUE);
-# 
-# g_53_sj_data_read<-inner_join(g_53_sj_data,gene_read_fr_fr,"rbp"="g");
-# 
-# g_53_sj_data_read[,"corrected cryptic 3'ss"]<-as.numeric(g_53_sj_data_read[,"cryptic 3'ss"])/
-#   as.numeric(g_53_sj_data_read$read_count)*(10^6);
-# 
-# write.table(g_53_sj_data_read,file="result/g_53_sj_all_full_read_count.tsv",sep="\t",
-#             quote = FALSE,col.names = TRUE,row.names = FALSE);
-
-
-#g_53_sj_data_read$X3_X5_ratio<-g_53_sj_data_read$X3/g_53_sj_data_read$X5;
-
-
-
-# 
-# 
-# ###make a figure
-# # library(ggplot2)
-#  g_53_sj_data<-read.table("result/g_53_sj_all_full.tsv",sep="\t",as.is = TRUE,header=TRUE);
-# colnames(g_53_sj_data)[1:3]<-c("g","X5","X3")
-# 
-# # 
-#  g_53_sj_data$g <- factor(g_53_sj_data$g, levels =g_53_sj_data[order(g_53_sj_data$X3,decreasing = TRUE),"g"]   )
-#  
-#  p<-ggplot(data=g_53_sj_data[!str_detect(g_53_sj_data$g,"CTL_"),], aes(x=g, y=X3)) +  theme(line = element_blank())+
-#    geom_bar(stat="identity")+ theme(axis.text.x = element_text(angle = 90, hjust = 1,size=6) )+
-#  xlab("gene knock down")+ylab("# cryptic 3'ss sites")
-#  
-#  pdf("result/g_53_sj_all.pdf",width=20,height=8);
-#  print(p);
-#  dev.off();
-# 
-# 
-# 
-# 
-# 
-# write.table(g_53_sj_data_read,file="result/g_53_sj_all_read_count.tsv",sep="\t",
-#             quote = FALSE,col.names = TRUE,row.names = FALSE);
-# 
-# g_53_sj_data_read$g <- factor(g_53_sj_data_read$g,
-# levels =g_53_sj_data_read[order(g_53_sj_data_read$X3_correct,decreasing = TRUE),"g"]   )
-# 
-# p1<-ggplot(data=g_53_sj_data_read, aes(x=g, y=X3_correct)) +  theme(line = element_blank())+
-#   geom_bar(stat="identity")+theme_minimal()+ 
-#   theme(text = element_text(size=20),axis.text.x = element_text(angle = 90, hjust = 1,size=6)  )+
-#   xlab("gene knock down")+ylab("# cryptic 3'ss sites / total read count x 10^6 ")+
-#   theme(axis.text.y = element_text(size=18) )
-# 
-# 
-# p2<-ggplot(data=g_53_sj_data_read[1:20,], aes(x=g, y=X3_correct)) +  theme(line = element_blank())+
-#   geom_bar(stat="identity")+theme_minimal()+ 
-#   theme(text = element_text(size=20),axis.text.x = element_text(angle = 90, hjust = 1,size=18)  )+
-#   xlab("gene knock down")+ylab("# cryptic 3'ss sites / total read count x 10^6 ")#+
-#   #theme()
-# 
-# 
-# pdf("result/g_53_sj_all_readcount.pdf",width=20,height=8);
-# 
-# print(p1);
-# print(p2);
-# 
-# dev.off();
-# 
-# 

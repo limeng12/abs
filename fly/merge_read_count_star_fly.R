@@ -4,7 +4,8 @@ library(stringr);
 library(dplyr);
 
 #gene_ids<-unique(readLines("fly/samples/gene_id_fly.txt") );
-gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt"),readLines("fly/samples/gene_id_fly_all.txt") ) ));
+#gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt"),readLines("fly/samples/gene_id_fly_all.txt") ) ));
+gene_ids<-sort(unique(c(readLines("fly/samples/gene_id_fly.txt") ) ));
 
 
 files_all<-list.files("fly/data/star_log_fly/");
