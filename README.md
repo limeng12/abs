@@ -1,13 +1,13 @@
 ## Analysis of cryptic splice sites.
 
-This repository includes intermediate results and data for this work. 
+This repository includes intermediate results, source code and data for this work. 
 
 The result, source code and data for each organism/cell line are stored seperatelly in each folder. 
 
-### Source code
+### Source code (.R)
  `code` stores source codes.
 
-### Cryptic splice sites, cryptic exons and cryptic junctions
+### Cryptic splice sites, cryptic exons and cryptic junctions (.bed)
  `star_target_only_jc` stores cryptic junction.
 
  `star_target_only_jc_5ss` stores cryptic 5' splice sites.
@@ -18,7 +18,7 @@ The result, source code and data for each organism/cell line are stored seperate
 
  `exon_mer_target_only_5ss` stores cryptic exons' 5' splice sites.
 
-### Motifs
+### Motifs (.pdf)
  `star_abs3_motif` stores the motifs of cryptic splice 3' splice sites.
 
  `star_abs5_motif` stores the motifs of cryptic splice 5' splice sites.
