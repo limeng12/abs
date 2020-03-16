@@ -4,8 +4,6 @@ library(dplyr)
 library(idr)
 setwd("/Users/mengli/Documents/projects/abs/");
 
-
-
 data<-read.table("mouse/g_53_sj_all_read_count_mouse.tsv",
                  header = TRUE,as.is = TRUE,sep = "\t",comment.char="$",quote = "$");
 

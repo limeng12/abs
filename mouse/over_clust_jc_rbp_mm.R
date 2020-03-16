@@ -8,8 +8,6 @@ library(cluster);
 library(pheatmap)
 library(reshape2)
 
-
-
 gene_ids<-(unique(readLines("mouse/gene_id_mm.txt")) );
 
 gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"siNT|mock|untreated")];
@@ -33,7 +31,6 @@ for(g in gene_ids_noctl){
     next;
   }
   
-  
   t_sj<-read.table(paste0("mouse/star_target_only_jc/",g,"_no_ctl.bed"),sep = "\t",header = FALSE, as.is = TRUE)[,1:7];
   
   if(nrow(t_sj)<10){
@@ -42,9 +39,7 @@ for(g in gene_ids_noctl){
     next;
   }
   
-  
   colnames(t_sj)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n");
-  
   
   all_jc<-c(all_jc,str_c(t_sj[,"chr"],":",t_sj[,"X5_pos"],"-",t_sj[,"X3_pos"]) );
   
@@ -119,16 +114,12 @@ for(g1 in gene_ids_noctl){
 rownames(diss_mat)<-gene_ids_noctl;
 colnames(diss_mat)<-gene_ids_noctl;
 
-
-
-write.table(diss_mat,file = "mouse/jc_overlap_p_values_matrix_mm.tsv",sep = "\t",
-            col.names = TRUE,row.names = TRUE,quote = FALSE);
+#write.table(diss_mat,file = "mouse/jc_overlap_p_values_matrix_mm.tsv",sep = "\t",
+#            col.names = TRUE,row.names = TRUE,quote = FALSE);
 
 library(reshape2)
 
-
 diss_mat<- log(-1*diss_mat+1);
-
 
 pdf("mouse/jc_ovlap_clu_mm.pdf",width = 100,height = 100);
 

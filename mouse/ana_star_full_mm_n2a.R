@@ -2,39 +2,17 @@ setwd("/Users/mengli/Documents/projects/abs");
 library(plyr);
 library(stringr);
 library(dplyr);
-library(BSgenome);
-library(BSgenome.Hsapiens.UCSC.hg19);
+#library(BSgenome);
+#library(BSgenome.Hsapiens.UCSC.hg19);
 library(ggplot2);
 library(bedr)
 options("scipen"=100, "digits"=4)
-hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
-
-#       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs5_motif/*.seq`;do `perl score5.pl $i >> $i.score`;done;
-#       for i in `ls /Users/mengli/Documents/projects/abs/data/star_abs3_motif/*.seq`;do `perl score3.pl $i >> $i.score`;done;
-
-#       find . -type f -name "*SJ.out.tab" -exec cp {} ../star_re \;
-#       find . -type f -name "*final.out" -exec cp {} ../star_log \;
-
-
-#   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/polII_mutant_data/star/\*SJ.out.tab \
-#   /Users/mengli/Documents/projects/abs/data/poll_star/
-
-#   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/star_re/\* /Users/mengli/Documents/projects/abs/data/star/
-#   scp limeng@10.10.118.191:/picb/rnasys2/limeng/data/star_log/\* /Users/mengli/Documents/projects/abs/data/star_log/
-
-#   find . -type d -name "tmp" -exec rm -rf {} \;
+#hg19_genome <- getBSgenome("BSgenome.Hsapiens.UCSC.hg19");
 
 gene_ids<-(unique(readLines("mouse/gene_id_mm.txt") ) );
 gene_ids<-gene_ids[str_detect(gene_ids,"N2A")]
 
-
-
-#gene_ids<-(readLines("samples/gene_id.txt") );
-#gene_ids<-c(gene_ids,gene_ids_rRNA);
-#writeLines(gene_ids,con=file("samples/gene_id.txt") );
-
 target_coor<-readLines("mouse/target_exon_coor_mm10.txt");
-
 
 ctl_sj<-read.table("mouse/star_mer/CTL_all_N2A_tab",sep = "\t",header = TRUE, as.is = TRUE);
 #colnames(ctl_sj)<-c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno","sample_count");
@@ -45,7 +23,6 @@ ctl_sj<-ctl_sj[ctl_sj[,"sample_count"]>1,]
 ##for control calculation only
 ctl_sj_high_confi<-ctl_sj[ctl_sj$anno>2,];
 
-
 ## delete all introns' 5'ss and 3'ss in ENCODE
 anno_sj<-read.table("mouse/mm10_gencode_intron.bed",sep = "\t",header = FALSE, as.is = TRUE);
 anno_sj[,2]<-anno_sj[,2]+1
@@ -53,7 +30,6 @@ anno_sj<-unname(anno_sj);
 
 anno_sj_positive<-anno_sj[anno_sj[,6]=="+",]
 anno_sj_negative<-anno_sj[anno_sj[,6]=="-",]
-
 
 anno_5ss<-unique( c(str_c(anno_sj_positive[,1],anno_sj_positive[,2]),
             str_c(anno_sj_negative[,1],anno_sj_negative[,3])  )  );
@@ -64,7 +40,6 @@ anno_3ss<-unique( c(str_c(anno_sj_positive[,1],anno_sj_positive[,3]),
             str_c(anno_sj_negative[,1],anno_sj_negative[,2])  ) );
 #colnames(anno_3ss)<-c("chr","X3_pos");
 
-
 total_5ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],ctl_sj_high_confi[,"X5_pos"] ),
                      anno_5ss) );
 
@@ -74,14 +49,10 @@ total_3ss<-unique(intersect(str_c(ctl_sj_high_confi[,"chr"],ctl_sj_high_confi[,"
 gene_ids_noctl<-gene_ids[!str_detect(gene_ids,"CTL_all")];
 
 junc_len<-matrix(nrow=0,ncol=8);
-
 g_53_sj<-matrix(nrow=0,ncol=9);
-
-
 
 for(g in gene_ids){
   print(g);
-  
   
   if(!file.exists(paste0("mouse/star_mer/",g,"_tab")) ){
     print(paste0("don't have: ",g) );
@@ -101,11 +72,7 @@ for(g in gene_ids){
   t_sj[,"region"]<-str_c(t_sj[,"chr"],":",t_sj[,"start"],"-",t_sj[,"end"]);
   
   #t_sj<-t_sj[t_sj[,"region"] %in% target_coor,];
-  
-  
-  
   t_sj<-t_sj[str_detect(t_sj$chr,"chr"),];
-  
   
   t_sj$strand2<-sapply(t_sj$strand,function(x){
     if(x==1){
@@ -124,19 +91,14 @@ for(g in gene_ids){
                                 anno_5ss   );
   #t_5_only_sj_count<-sum(!t_5_only_sj_set_index);
   
-  
   ctl_5_only_sj_count<-length(unique(setdiff(total_5ss, str_c(t_sj[,"chr"],t_sj[,"X5_pos"])  )  ) );
-  
   
   #t_5_cano_per<-sum(str_detect(t_5_only_sj_set,"GT")) /length(t_5_only_sj_set);
   t_5_only_sj_set<-unique(str_c(t_sj[,"chr"],t_sj[,"X5_pos"],t_sj[,"X5_n"])[!t_5_only_sj_set_index]);
   t_5_only_sj_count_u12<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"AT")] );
   
-  
   t_5_only_sj_count_gc<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"GC")] );
   t_5_only_sj_count<-length(t_5_only_sj_set[str_detect(t_5_only_sj_set,"GT")] );
-  
-  
   
   t_sj_in_only_5ss_fr<-t_sj[!t_5_only_sj_set_index,c("chr","X5_pos","X5_pos","X5_n")];
   
@@ -172,15 +134,11 @@ for(g in gene_ids){
                                  anno_3ss  )
   #t_3_only_sj_count<-sum(!t_3_only_sj_set_index);
   
-
-  
   t_3_only_sj_set<-unique(str_c(t_sj[,"chr"],t_sj[,"X3_pos"],t_sj[,"X3_n"])[!t_3_only_sj_set_index])
                            
   t_3_only_sj_count_u12<-length(t_3_only_sj_set[str_detect(t_3_only_sj_set,"AC")] );
   
   #t_3_only_sj_count_u12_readcount<-sum(t_3_only_sj_set[str_detect(t_3_only_sj_set,"AC")])
-    
-  
   t_3_only_sj_count<-length(t_3_only_sj_set[str_detect(t_3_only_sj_set,"AG")] );
   
   
@@ -210,14 +168,10 @@ for(g in gene_ids){
   
   both_unique<-sum((!t_5_only_sj_set_index) & (!t_3_only_sj_set_index) );
   
-  
   ctl_3_only_sj_count<-length(unique(setdiff(total_3ss,str_c(t_sj[,"chr"],t_sj[,"X3_pos"]) )  ));
   
   
   #t_3_cano_per<-sum(str_detect(t_3_only_sj_set,"AG"))/length(t_3_only_sj_set);
-  
-  
-  
   t_ctl_sj<-left_join(t_sj,ctl_sj,
                       by=c("chr"="chr","X5_pos"="X5_pos","X3_pos"="X3_pos",
                            "strand"="strand","type"="type","X5_pos"="X5_pos","X3_pos"="X3_pos") );
@@ -228,7 +182,6 @@ for(g in gene_ids){
   
   junc_len<-rbind(junc_len,c(g,nrow(t_only_sj_all),
                              as.vector(summary(abs(t_only_sj_all$X3_pos-t_only_sj_all$X5_pos))) ) );
-  
   
   
   is_neg<-t_only_sj_all[,"strand"]==2;
@@ -256,12 +209,8 @@ for(g in gene_ids){
   
   
   #t_5_only_anno_sj_count<-length(setdiff(t_sj[,2],anno_sj[,2]) );
-  
   #t_3_only_anno_sj_count<-length(setdiff(t_sj[,3],anno_sj[,3]) );
-  
-  
   #ctl_5_only_sj_count<-length(setdiff(ctl_sj[,2],t_sj[,2]) );
-  
   #ctl_3_only_sj_count<-length(setdiff(ctl_sj[,3],t_sj[,3]) );
   
   

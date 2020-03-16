@@ -7,10 +7,8 @@ library(dplyr);
 #   find star_mm/ -type f -name '*SJ.out.tab' -exec cp '{}' star_re/ ';'
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/mouse/star_re/\* /Users/mengli/Documents/projects/abs/mouse/star/
 
-
 #   find star_mm/ -type f -name '*.final.out' -exec cp '{}' star_log/ ';'
 #   scp limeng@10.10.118.191:/picb/rnasys2/limeng/mouse/star_log/\* /Users/mengli/Documents/projects/abs/mouse/star_log/
-
 
 gene_ids<-(unique(readLines("mouse/gene_id_mm.txt") ) );
 #gene_ids_bren<-(unique(readLines("samples/gene_id.txt") ) );
@@ -49,21 +47,19 @@ for( g in gene_ids){
     sj_all<-rbind(sj_all,files_all_one_gene);
   }
   
-  #colnames(sj_all)<-c("chr","start","end","strand","type","anno","uni_reads","mul_reads","overhang");
   colnames(sj_all)<-c("chr","start","end","strand","type","anno","uni_reads");
   
   sj_all<-sj_all[,c("chr","start","end","strand","type","uni_reads")];
-  #sj_all[,"sample_count"]<-length(files_one_g);
   
+  
+  #colnames(sj_all)<-c("chr","start","end","strand","type","anno","uni_reads","mul_reads","overhang");
+  #sj_all[,"sample_count"]<-length(files_one_g);
   #sj_all_mer<-ddply(sj_all,.(chr,start,end,strand,type),.fun=function(x){
-    
     #type_s<-paste(x[,"type"],collapse = ",");
   #  uni_reads_c<-sum(x[,"uni_reads"]);
-    
   #  uni_reads_c
     #paste0("type=",type_s," unique_read_c=",uni_reads_c);
   #},.parallel=TRUE );
-  
   #sj_all_mer<-ddply(sj_all,.(chr,start,end,strand,type),summarize, uni_reads_c=sum(uni_reads) );
     
   sj_all_mer<-sj_all %>% group_by(chr,start,end,strand,type) %>% summarise(anno=sum(uni_reads),sample_count=length(uni_reads) );
@@ -123,7 +119,6 @@ for( g in gene_ids){
   sj_all_mer_filter_sense<-sj_all_mer_filter[sj_all_mer_filter$X5_pos!=sj_all_mer_filter$X3_pos,];
   
   #sj_all_mer_filter_sense[,"sample_count"]<-length(files_one_g);
-  
   #g<-str_c("rRNA_",g);
   
   write.table(sj_all_mer_filter_sense,file = paste0("mouse/star_mer/",g,"_tab"),quote = FALSE,sep = "\t",
@@ -176,8 +171,8 @@ for( g in gene_ids_ctl[-1]){
 #sj_all_mer<-sj_all %>% group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
 #  summarise(anno=paste0(anno,collapse = " "),rbp_count=length(unique(sample_count) ));
 
-sj_all_mer<-sj_all %>% group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
-  summarise(anno=paste0(anno,collapse = " "),sample_count=sum(sample_count) );
+sj_all_mer<-sj_all %>% dplyr::group_by(chr,X5_pos,X3_pos,strand,type,X5_n,X3_n) %>% 
+  dplyr::summarise(anno=paste0(anno,collapse = " "),sample_count=sum(sample_count) );
 
 
 sj_all_mer<-sj_all_mer[,c("chr","X5_pos","X3_pos","strand","type","X5_n","X3_n","anno","sample_count")];
