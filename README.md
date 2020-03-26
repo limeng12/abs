@@ -40,7 +40,7 @@ The `jI` tag in the `STAR` aligner, contain the junction sites, the regions betw
 
  `exon_mer_target_only_5ss` stores the position of cryptic exons' 5' splice sites.
 
-### Motifs of shRNA-seq in different regions (.pdf)
+### Motifs of cryptic splie sites in different regions (.pdf)
 
 I store cryptic splice sites' motifs of different regions in different folders. 
 
