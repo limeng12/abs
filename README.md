@@ -61,7 +61,7 @@ I store cryptic splice sites' motifs of different regions in different folders.
  `star_abs5_motif_deep_intron` stores the motifs of cryptic splice 5' splice sites in deep introns for each shRNA-seq.
 
 
-### Metaprofiles to show cryptic splice sites' postion 
+### Metaprofiles to show cryptic splice sites' postion (.pdf)
 The `pdf` file in each cell line's directory
 The meta-profiles of cryptic sites in K562, “3_” indicates cryptic 3' splice sites, while “5_” indicates cryptic 5' splice sites. Three panels in each figure: the first panel is the metaprofile of 5' splice sites, where 0 is the 5' splice site position; the second panel is the metaprofile of 3' splice sites, where 0 is the 3' splice site position; the third panel is around the brand point, where 0 is the branch point position.
 
