@@ -20,7 +20,7 @@ The result, source code and data for each organism/cell line are stored seperate
 ### Cryptic splice sites and cryptic junctions (.bed)
 `STAR` aligner will output `SJ` files, which is very convient for splice junction analysis. So sub-folders that starts with `star` are related to cryptic splice sites.
 
-Besides `STAR` aligner, I also tried `MapSplice`, which is also a splice-wise aligner and can output files can contain junctions. But I generally got much more junctions using `STAR` than `MapSplice`, and also the speed of `STAR` is much higher than `MapSplice`.
+Besides `STAR` aligner, I also tried `MapSplice`, which is also a splice-wise aligner and can output files that contain junctions. But I generally got much more junctions using `STAR` than `MapSplice`, and also the speed of `STAR` is much higher than `MapSplice`.
 
 I also tried splicing-graph based aligner such as `Whippet`. The de novo junctions it detected are much lesser than `STAR` and `MapSplice`. But it can find de novo alternative splicing events.
 
