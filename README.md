@@ -42,7 +42,7 @@ The `jI` tag in the `STAR` aligner, contain the junction sites, the regions betw
 
 ### Motifs of shRNA-seq in different regions (.pdf)
 
-I store the motifs of different regions in different folders. 
+I store cryptic splice sites' motifs of different regions in different folders. 
 
  `star_abs3_motif` stores the motifs of cryptic splice 3' splice sites for each shRNA-seq.
 
