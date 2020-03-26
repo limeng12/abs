@@ -24,7 +24,7 @@ Besides `STAR` aligner, I also tried `MapSplice`, which is also a splice-wise al
 
 I also tried splicing-graph based aligner such as `Whippet`. The de novo junctions it detected are much lesser than `STAR` and `MapSplice`. But it can find de novo alternative splicing events.
 
-Read count support cryptic splice sites account 5/10,000 of total mapped reads in average, this make sensitivity is key thing to consider when analyzing cryptic splice sites. So after all, I choose `STAR` to do alignment since it can detect highest number of cryptic splice sites. So sub-folders that starts with `star` are related to cryptic splice sites.
+Read count support cryptic splice sites account 5/10,000 of total mapped reads in average, this make sensitivity is key thing to consider when analyzing cryptic splice sites. After all, I choose `STAR` to do alignment since it can detect highest number of cryptic splice sites. So sub-folders that starts with `star` are related to cryptic splice sites.
 
  `star_target_only_jc` stores the position of cryptic junctions.
 
@@ -41,6 +41,8 @@ The `jI` tag in the `STAR` aligner, contain the junction sites, the regions betw
  `exon_mer_target_only_5ss` stores the position of cryptic exons' 5' splice sites.
 
 ### Motifs of shRNA-seq in different regions (.pdf)
+
+I store the motifs of different regions in different folders. 
 
  `star_abs3_motif` stores the motifs of cryptic splice 3' splice sites for each shRNA-seq.
 
@@ -64,4 +66,6 @@ The `pdf` file in each cell line's directory
 The meta-profiles of cryptic sites in K562, “3_” indicates cryptic 3' splice sites, while “5_” indicates cryptic 5' splice sites. Three panels in each figure: the first panel is the metaprofile of 5' splice sites, where 0 is the 5' splice site position; the second panel is the metaprofile of 3' splice sites, where 0 is the 3' splice site position; the third panel is around the brand point, where 0 is the branch point position.
 
 
-### Suggestions and comments: limeng49631@aliyun.com
+### Suggestions and comments are very welcome: limeng49631@aliyun.com
+
+
