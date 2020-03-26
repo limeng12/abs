@@ -24,9 +24,7 @@ Besides `STAR` aligner, I also tried `MapSplice`, which is also a splice-wise al
 
 I also tried splicing-graph based aligner such as `Whippet`. The de novo junctions it detected are much lesser than `STAR` and `MapSplice`. But it can find de novo alternative splicing events.
 
-Read count support cryptic splice sites account 5/10,000 of total mapped reads in average, this make sensitivity is key thing to consider when analyzing cryptic splice sites. So after all, I choose `STAR` to do alignment since it can detect highest number of cryptic splice sites. 
-
-So sub-folders that starts with `star` are related to cryptic splice sites.
+Read count support cryptic splice sites account 5/10,000 of total mapped reads in average, this make sensitivity is key thing to consider when analyzing cryptic splice sites. So after all, I choose `STAR` to do alignment since it can detect highest number of cryptic splice sites. So sub-folders that starts with `star` are related to cryptic splice sites.
 
  `star_target_only_jc` stores the position of cryptic junctions.
 
