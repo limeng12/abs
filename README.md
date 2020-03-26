@@ -62,3 +62,6 @@ The `jI` tag in the `STAR` aligner, contain the junction sites, the regions betw
 ### Metaprofiles to show cryptic splice sites' postion 
 The `pdf` file in each cell line's directory
 The meta-profiles of cryptic sites in K562, “3_” indicates cryptic 3' splice sites, while “5_” indicates cryptic 5' splice sites. Three panels in each figure: the first panel is the metaprofile of 5' splice sites, where 0 is the 5' splice site position; the second panel is the metaprofile of 3' splice sites, where 0 is the 3' splice site position; the third panel is around the brand point, where 0 is the branch point position.
+
+
+### Suggestions and comments: limeng49631@aliyun.com
